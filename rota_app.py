@@ -15,7 +15,7 @@ secador = ["Não", "SEC-1", "SEC-2"]
 destinos = ["Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
 
 # Adicionando os nós no grafo
-G.add_nodes_from(origens + intermediarios + destinos)
+G.add_nodes_from(origens + limpeza + intermediarios + secador + destinos)
 
 # Adicionando as arestas
 
