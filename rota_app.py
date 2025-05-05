@@ -29,13 +29,13 @@ if "rotas_ativas" not in st.session_state:
 if "status_rotas" not in st.session_state:
     st.session_state["status_rotas"] = {i: "parado" for i in range(len(rotas))}
 
-def desenha_rota(caminho):
-    pos = nx.spring_layout(G)
-    plt.figure(figsize=(8, 6))
-    nx.draw(G, pos, with_labels=True, node_color="lightblue", node_size=1500, arrows=True)
-    edge_path = list(zip(caminho, caminho[1:]))
-    nx.draw_networkx_edges(G, pos, edgelist=edge_path, edge_color="red", width=3)
-    st.pyplot(plt)
+# def desenha_rota(caminho):
+#   pos = nx.spring_layout(G)
+#    plt.figure(figsize=(8, 6))
+#    nx.draw(G, pos, with_labels=True, node_color="lightblue", node_size=1500, arrows=True)
+#    edge_path = list(zip(caminho, caminho[1:]))
+#    nx.draw_networkx_edges(G, pos, edgelist=edge_path, edge_color="red", width=3)
+#    st.pyplot(plt)
 
 st.title("Simulador de Rotas Industriais")
 
@@ -130,6 +130,6 @@ for i, rota in enumerate(rotas):
                 if not conflito:
                     st.session_state["rotas_ativas"][i] = caminho
                     st.success(f"{rota}: {' → '.join(caminho)}")
-                    desenha_rota(caminho)
+                    # desenha_rota(caminho)
             else:
                 st.error(f"{rota}: Caminho inválido")
