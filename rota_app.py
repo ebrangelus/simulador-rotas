@@ -8,9 +8,9 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 G = nx.DiGraph()
 
 # Definindo os nós (origens, intermediários, destinos)
-origens = ["MOEGA 1"]
-intermediarios = ["V-1", "V-7", "V-8"]
-destinos = ["CT-1", "CT-2", "Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
+origens = ["MOEGA 1", "MOEGA 2"]
+intermediarios = ["V-1", "V-7", "V-8", "CT-1", "CT-2"]
+destinos = ["Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
 
 # Adicionando os nós no grafo
 G.add_nodes_from(origens + intermediarios + destinos)
