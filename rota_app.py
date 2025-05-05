@@ -86,7 +86,7 @@ for i, rota in enumerate(rotas):
                         st.session_state["status_rotas"][i] = "executando"
                         st.session_state["rotas_ativas"][i] = caminho
                         st.success(f"{rota}: {' → '.join(caminho)}")
-                        desenha_rota(caminho)
+                        #desenha_rota(caminho)
                 else:
                     st.error("⚠️ Caminho inválido")
                     st.session_state["status_rotas"][i] = "parado"
