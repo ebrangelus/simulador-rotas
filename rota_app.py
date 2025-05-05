@@ -57,7 +57,31 @@ for i, rota in enumerate(rotas):
 
         with col5:
             if st.form_submit_button("▶️"):
-                st.session_state["status_rotas"][i] = "executando"
+                if nx.has_path(G, origem, destino):
+                    caminho = nx.shortest_path(G, origem, destino)
+
+                    conflito = False
+                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                        if i == j:
+                            continue
+                        if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                            conflito = True
+                            break
+
+                    if conflito:
+                        st.error(f"⚠️ Conflito com outra rota ativa!")
+                        st.session_state["status_rotas"][i] = "parado"
+                    else:
+                        st.session_state[f"origem_{i}"] = origem
+                        st.session_state[f"destino_{i}"] = destino
+                        st.session_state["status_rotas"][i] = "executando"
+                        st.session_state["rotas_ativas"][i] = caminho
+                        st.success(f"{rota}: {' → '.join(caminho)}")
+                        desenha_rota(caminho)
+                else:
+                    st.error("⚠️ Caminho inválido")
+                    st.session_state["status_rotas"][i] = "parado"
+
         
         with col6:
             if st.form_submit_button("⏸️"):
