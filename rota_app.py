@@ -139,8 +139,8 @@ for i, rota in enumerate(rotas):
 
         if not conflito:
         # Verifica se outro caminho já usa o mesmo destino
-                for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                    if i == j:
+               for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                   if i == j:
                         continue
                 if destino == outro_caminho[-1]:
                    conflito = True
