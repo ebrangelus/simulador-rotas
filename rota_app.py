@@ -137,9 +137,18 @@ for i, rota in enumerate(rotas):
                         st.error(f"⚠️ Conflito com {rotas[j]}!")
                         break
 
-                if not conflito:
-                    st.session_state["rotas_ativas"][i] = caminho
-                    st.success(f"{rota}: {' → '.join(caminho)}")
-                    # desenha_rota(caminho)
-            else:
-                st.error(f"{rota}: Caminho inválido")
+         if not conflito:
+        # Verifica se outro caminho já usa o mesmo destino
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                if destino == outro_caminho[-1]:
+                   conflito = True
+                   st.error(f"⚠️ Destino {destino} já está sendo usado pela {rotas[j]}!")
+                   break
+
+               if not conflito:
+                   st.session_state["rotas_ativas"][i] = caminho
+                   st.success(f"{rota}: {' → '.join(caminho)}")
+               else:
+                   st.error(f"{rota}: Caminho inválido")
