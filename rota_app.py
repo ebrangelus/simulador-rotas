@@ -103,7 +103,7 @@ for i, rota in enumerate(rotas):
     with col6:
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
-        with col7:
+    with col7:
             if st.form_submit_button("▶️"):
                 if nx.has_path(G, origem, destino):
                     caminho = nx.shortest_path(G, origem, destino)
