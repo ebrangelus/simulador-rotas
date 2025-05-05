@@ -6,18 +6,29 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 
 # Criar grafo de exemplo
 G = nx.DiGraph()
-G.add_edges_from([
-    ("MOEGA 1", "SP1"), ("MOEGA 1", "SP2"), ("MOEGA 1", "SP3"), ("MOEGA 1", "SP4"),
-    ("MOEGA 1", "SP5"), ("MOEGA 1", "SP6"), ("MOEGA 1", "SP7"), ("MOEGA 1", "SP8"),
-    ("MOEGA 1", "SP9"), ("MOEGA 1", "SP10"),
-    ("MOEGA 2", "SP1"), ("MOEGA 2", "SP2"), ("MOEGA 2", "SP3"), ("MOEGA 2", "SP4"),
-    ("MOEGA 2", "SP5"), ("MOEGA 2", "SP6"), ("MOEGA 2", "SP7"), ("MOEGA 2", "SP8"),
-    ("MOEGA 2", "SP9"), ("MOEGA 2", "SP10")
-])
+
+# MOEGA 1
+G.add_edge("MOEGA 1", "REG-1")
+G.add_edge("MOEGA 1", "REG-2")
+G.add_edge("MOEGA 1", "REG-3")
+G.add_edge("REG-1", "V-1")
+G.add_edge("REG-2", "V-2")
+G.add_edge("REG-3", "V-3")
+
+# MOEGA 2
+G.add_edge("MOEGA 2", "REG-4")
+G.add_edge("MOEGA 2", "REG-5")
+G.add_edge("MOEGA 2", "REG-6")
+G.add_edge("REG-4", "V-4")
+G.add_edge("REG-5", "V-5")
+G.add_edge("REG-6", "V-6")
 
 # Definir os destinos fixos
 origens = ["MOEGA 1", "MOEGA 2"]
-destinos = [f"SP{i}" for i in range(1, 11)]
+destinos = [f"V-{i}" for i in range(1, 7)]
+
+#Definir Caminho mais curto
+caminho = nx.shortest_path(G, origem, destino)
 
 # Definir as rotas
 rotas = ['Rota 1', 'Rota 2', 'Rota 3', 'Rota 4',  'Rota 5',  'Rota 6',  'Rota 7',  'Rota 8',  'Rota 9',  'Rota 10']
