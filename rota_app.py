@@ -101,12 +101,7 @@ for i, rota in enumerate(rotas):
 
 
 with col6:
-    #if st.session_state["status_rotas"][i] == "executando":
-     #   caminho = st.session_state["rotas_ativas"].get(i)
-      #  if caminho:
-       #     st.success(f"{rota}: {' → '.join(caminho)}")
-
-
+            comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
         with col7:
             if st.form_submit_button("▶️"):
