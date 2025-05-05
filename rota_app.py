@@ -131,16 +131,16 @@ for i, rota in enumerate(rotas):
                     st.session_state["status_rotas"][i] = "parado"
 
         
-        with col8:
+    with col8:
             if st.form_submit_button("⏸️"):
                 st.session_state["status_rotas"][i] = "pausado"
         
-        with col9:
+    with col9:
             if st.form_submit_button("⏹️"):
                 st.session_state["status_rotas"][i] = "parado"
                 st.session_state["rotas_ativas"].pop(i, None)
         
-        with col10:
+    with col10:
             status = st.session_state["status_rotas"][i]
             if status == "executando":
                 st.markdown("🟢")
