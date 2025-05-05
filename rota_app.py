@@ -100,7 +100,7 @@ for i, rota in enumerate(rotas):
                     key=f"select_destino_{i}")
 
 
-with col6:
+    with col6:
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
         with col7:
