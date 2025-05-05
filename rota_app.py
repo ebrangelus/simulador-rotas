@@ -150,9 +150,9 @@ for i, rota in enumerate(rotas):
                 st.markdown("🔴")
 
         # Após botões, desenhar ou mostrar mensagem
-        if status == "executando":
-            st.session_state[f"origem_{i}"] = origem
-            st.session_state[f"destino_{i}"] = destino
+            if status == "executando":
+                st.session_state[f"origem_{i}"] = origem
+                st.session_state[f"destino_{i}"] = destino
 
             if nx.has_path(G, origem, destino):
                 caminho = nx.shortest_path(G, origem, destino)
