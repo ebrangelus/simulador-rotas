@@ -1,65 +1,61 @@
 import streamlit as st
 import networkx as nx
-import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Simulador de Rotas", layout="wide")
-
-# Criar grafo de exemplo
-G = nx.DiGraph()
+# Criar um grafo simples para representar a planta
+G = nx.Graph()
 G.add_edges_from([
-    ("A", "B"), ("B", "C"), ("C", "D"),
-    ("A", "D"), ("D", "E"), ("E", "F"),
-    ("F", "G"), ("B", "E"), ("C", "F")
+    ("MOEGA 1", "SP1"), ("MOEGA 1", "SP2"), ("MOEGA 1", "SP3"), ("MOEGA 1", "SP4"),
+    ("MOEGA 1", "SP5"), ("MOEGA 1", "SP6"), ("MOEGA 1", "SP7"), ("MOEGA 1", "SP8"),
+    ("MOEGA 1", "SP9"), ("MOEGA 1", "SP10"),
+    ("MOEGA 2", "SP1"), ("MOEGA 2", "SP2"), ("MOEGA 2", "SP3"), ("MOEGA 2", "SP4"),
+    ("MOEGA 2", "SP5"), ("MOEGA 2", "SP6"), ("MOEGA 2", "SP7"), ("MOEGA 2", "SP8"),
+    ("MOEGA 2", "SP9"), ("MOEGA 2", "SP10")
 ])
 
-rotas = [f"Rota {i+1}" for i in range(10)]
+# Definir os destinos fixos
+origens = ["MOEGA 1", "MOEGA 2"]
+destinos = [f"SP{i}" for i in range(1, 11)]
 
-# Inicializações
-if "rotas_ativas" not in st.session_state:
+# Inicializando o estado da sessão
+if "status_rotas" not in st.session_state:
+    st.session_state["status_rotas"] = {i: "parado" for i in range(1, 11)}
     st.session_state["rotas_ativas"] = {}
 
-if "status_rotas" not in st.session_state:
-    st.session_state["status_rotas"] = {i: "parado" for i in range(len(rotas))}
-
+# Função para desenhar a rota
 def desenha_rota(caminho):
-    pos = nx.spring_layout(G)
-    plt.figure(figsize=(8, 6))
-    nx.draw(G, pos, with_labels=True, node_color="lightblue", node_size=1500, arrows=True)
-    edge_path = list(zip(caminho, caminho[1:]))
-    nx.draw_networkx_edges(G, pos, edgelist=edge_path, edge_color="red", width=3)
-    st.pyplot(plt)
+    st.write(f"Desenhando rota: {' → '.join(caminho)}")
 
-st.title("Simulador de Rotas Industriais")
+# Loop para criar as rotas
+for i in range(1, 11):
+    with st.expander(f"Rota {i}"):
+        col1, col2, col3, col4, col5 = st.columns([1, 3, 3, 1, 1])
 
-for i, rota in enumerate(rotas):
-    with st.form(key=f"form_rota_{i}"):
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns([1, 2.5, 2.5, 2, 1, 1, 1, 1])
-        
+        # Exibir a origem e destino para cada rota
         with col1:
-            st.write(f"**{rota}**")
-
+            st.write(f"Rota {i}")
+        
         with col2:
-            origem = st.selectbox(
-                "Origem", list(G.nodes),
-                index=list(G.nodes).index(st.session_state.get(f"origem_{i}", list(G.nodes)[0])),
-                key=f"select_origem_{i}"
-            )
-
+            origem = st.selectbox(f"Origem para Rota {i}:", origens, key=f"origem_{i}")
+        
         with col3:
-            destino = st.selectbox(
-                "Destino", list(G.nodes),
-                index=list(G.nodes).index(st.session_state.get(f"destino_{i}", list(G.nodes)[1])),
-                key=f"select_destino_{i}"
-            )
-
+            destino = st.selectbox(f"Destino para Rota {i}:", destinos, key=f"destino_{i}")
+        
+        # Mostrar o LED de status
         with col4:
-            comentario = st.text_input("Comentário", key=f"comentario_{i}")
+            if st.session_state["status_rotas"][i] == "executando":
+                st.markdown("🟢 Rota Iniciada")
+            elif st.session_state["status_rotas"][i] == "parado":
+                st.markdown("🔴 Rota Parada")
+            else:
+                st.markdown("🟠 Rota Pausada")
 
+        # Adicionar botão de Play
         with col5:
-            if st.form_submit_button("▶️"):
+            if st.form_submit_button(f"▶️ Iniciar Rota {i}"):
                 if nx.has_path(G, origem, destino):
                     caminho = nx.shortest_path(G, origem, destino)
 
+                    # Verificar conflito
                     conflito = False
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
@@ -76,51 +72,21 @@ for i, rota in enumerate(rotas):
                         st.session_state[f"destino_{i}"] = destino
                         st.session_state["status_rotas"][i] = "executando"
                         st.session_state["rotas_ativas"][i] = caminho
-                        st.success(f"{rota}: {' → '.join(caminho)}")
+                        st.success(f"{origem} → {destino}: {' → '.join(caminho)}")
                         desenha_rota(caminho)
                 else:
                     st.error("⚠️ Caminho inválido")
                     st.session_state["status_rotas"][i] = "parado"
 
-        
-        with col6:
-            if st.form_submit_button("⏸️"):
+        # Botão de Pausar
+        with col5:
+            if st.form_submit_button(f"⏸️ Pausar Rota {i}"):
                 st.session_state["status_rotas"][i] = "pausado"
-        
-        with col7:
-            if st.form_submit_button("⏹️"):
+                st.warning(f"Rota {i} pausada.")
+
+        # Botão de Parar
+        with col5:
+            if st.form_submit_button(f"🛑 Parar Rota {i}"):
                 st.session_state["status_rotas"][i] = "parado"
-                st.session_state["rotas_ativas"].pop(i, None)
-        
-        with col8:
-            status = st.session_state["status_rotas"][i]
-            if status == "executando":
-                st.markdown("🟢")
-            elif status == "pausado":
-                st.markdown("🟡")
-            else:
-                st.markdown("🔴")
+                st.info(f"Rota {i} parada.")
 
-        # Após botões, desenhar ou mostrar mensagem
-        if status == "executando":
-            st.session_state[f"origem_{i}"] = origem
-            st.session_state[f"destino_{i}"] = destino
-
-            if nx.has_path(G, origem, destino):
-                caminho = nx.shortest_path(G, origem, destino)
-
-                conflito = False
-                for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                    if i == j:
-                        continue
-                    if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
-                        conflito = True
-                        st.error(f"⚠️ Conflito com {rotas[j]}!")
-                        break
-
-                if not conflito:
-                    st.session_state["rotas_ativas"][i] = caminho
-                    st.success(f"{rota}: {' → '.join(caminho)}")
-                    desenha_rota(caminho)
-            else:
-                st.error(f"{rota}: Caminho inválido")
