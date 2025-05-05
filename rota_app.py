@@ -24,14 +24,20 @@ G.add_edge("REG-5", "V-5")
 G.add_edge("REG-6", "V-6")
 
 # Definir os destinos fixos
-origens = ["MOEGA 1", "MOEGA 2"]
-destinos = [f"V-{i}" for i in range(1, 7)]
+origem = ["MOEGA 1", "MOEGA 2"]
 
-#Definir Caminho mais curto
-caminho = nx.shortest_path(G, origem, destino)
+#Valvulas para o Destino CT
+for i in range(1, 7):
+    G.add_edge(f"V-{i}", "CT-1")
+    G.add_edge(f"V-{i}", "CT-2")
+
+destinos = ["CT-1", "CT-2"]
 
 # Definir as rotas
 rotas = ['Rota 1', 'Rota 2', 'Rota 3', 'Rota 4',  'Rota 5',  'Rota 6',  'Rota 7',  'Rota 8',  'Rota 9',  'Rota 10']
+
+#Definir Caminho mais curto
+caminho = nx.shortest_path(G, origem, destino)
 
 # Inicializações
 if "rotas_ativas" not in st.session_state:
