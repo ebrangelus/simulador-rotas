@@ -9,19 +9,12 @@ G = nx.DiGraph()
 
 # MOEGA 1
 G.add_edge("MOEGA 1", "REG-1")
-G.add_edge("MOEGA 1", "REG-2")
-G.add_edge("MOEGA 1", "REG-3")
-G.add_edge("REG-1", "V-1")
-G.add_edge("REG-2", "V-2")
-G.add_edge("REG-3", "V-3")
+G.add_edge("REG-1", "V-1, 2, 3")
 
 # MOEGA 2
 G.add_edge("MOEGA 2", "REG-4")
-G.add_edge("MOEGA 2", "REG-5")
-G.add_edge("MOEGA 2", "REG-6")
-G.add_edge("REG-4", "V-4")
-G.add_edge("REG-5", "V-5")
-G.add_edge("REG-6", "V-6")
+G.add_edge("REG-4", "V-4, 5, 6")
+
 
 # Definir os destinos fixos
 origens = ["MOEGA 1", "MOEGA 2"]
