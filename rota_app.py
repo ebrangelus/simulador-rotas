@@ -137,7 +137,7 @@ for i, rota in enumerate(rotas):
                         st.error(f"⚠️ Conflito com {rotas[j]}!")
                         break
 
-         if not conflito:
+             if not conflito:
         # Verifica se outro caminho já usa o mesmo destino
                 for j, outro_caminho in st.session_state["rotas_ativas"].items():
                     if i == j:
