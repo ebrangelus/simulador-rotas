@@ -146,8 +146,17 @@ if status == "executando":
                     st.error(f"⚠️ Destino {destino} já está sendo usado pela {rotas[j]}!")
                     break
 
-        if not conflito:
-            st.session_state["rotas_ativas"][i] = caminho
-            st.success(f"{rota}: {' → '.join(caminho)}")
+if not conflito:
+    # Verifica se o destino já está em uso por outra rota
+    for j, outro_destino in st.session_state.items():
+        if j.startswith("destino_") and j != f"destino_{i}" and outro_destino == destino:
+            st.error(f"🚫 Destino {destino} já está sendo usado por outra rota!")
+            conflito = True
+            break
+
+    if not conflito:
+        st.session_state["rotas_ativas"][i] = caminho
+        st.success(f"{rota}: {' → '.join(caminho)}")
+
     else:
         st.error(f"{rota}: Caminho inválido")
