@@ -10,6 +10,8 @@ G = nx.DiGraph()
 # Definindo os nós (origens, intermediários, destinos)
 origens = ["MOEGA 1", "MOEGA 2"]
 intermediarios = ["V-1", "V-7", "V-8", "CT-1", "CT-2"]
+limpeza = ["Não", "MLP-1", "MLP-2", "MLP-3", "MLP-4"]
+secador = ["Não", "SEC-1", "SEC-2"]
 destinos = ["Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
 
 # Adicionando os nós no grafo
@@ -80,19 +82,31 @@ for i, rota in enumerate(rotas):
                 index=origens.index(st.session_state.get(f"origem_{i}", origens[0])),  # Corrigido para usar 'origens'
                     key=f"select_origem_{i}"
     )
-
+        
     with col3:
+        prelimpeza = st.selectbox(
+            "Pré Limpeza", limpeza,  # Usando a lista 'limpeza', que tem apenas "MOEGA 1" e "MOEGA 2"
+                index=limpeza.index(st.session_state.get(f"prelimpeza_{i}", limpeza[0])),  # Corrigido para usar 'origens'
+                    key=f"select_prelimpeza_{i}"
+    )    
+        
+    with col4:
         destino = st.selectbox(
             "Destino", destinos,  # Usando a lista 'destinos', que tem "SP1" até "SP10"
                 index=destinos.index(st.session_state.get(f"destino_{i}", destinos[0])),  # Corrigido para usar 'destinos'
                     key=f"select_destino_{i}"
     )
+    with col5:
+        origemsecador = st.selectbox(
+            "Secador", secador,  # Usando a lista 'secador', que tem "SP1" até "SP10"
+                index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),  # Corrigido para usar 'destinos'
+                    key=f"select_origemsecador_{i}"
+    )
 
-
-        with col4:
+        with col6:
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
-        with col5:
+        with col7:
             if st.form_submit_button("▶️"):
                 if nx.has_path(G, origem, destino):
                     caminho = nx.shortest_path(G, origem, destino)
@@ -120,16 +134,16 @@ for i, rota in enumerate(rotas):
                     st.session_state["status_rotas"][i] = "parado"
 
         
-        with col6:
+        with col8:
             if st.form_submit_button("⏸️"):
                 st.session_state["status_rotas"][i] = "pausado"
         
-        with col7:
+        with col9:
             if st.form_submit_button("⏹️"):
                 st.session_state["status_rotas"][i] = "parado"
                 st.session_state["rotas_ativas"].pop(i, None)
         
-        with col8:
+        with col10:
             status = st.session_state["status_rotas"][i]
             if status == "executando":
                 st.markdown("🟢")
