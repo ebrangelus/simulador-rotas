@@ -43,22 +43,23 @@ for i, rota in enumerate(rotas):
     with st.form(key=f"form_rota_{i}"):
         col1, col2, col3, col4, col5, col6, col7, col8 = st.columns([1, 2.5, 2.5, 2, 1, 1, 1, 1])
         
-        with col1:
+    with col1:
             st.write(f"**{rota}**")
 
-        with col2:
-            origem = st.selectbox(
-                "Origem", list(G.nodes),
-                index=list(G.nodes).index(st.session_state.get(f"origem_{i}", list(G.nodes)[0])),
-                key=f"select_origem_{i}"
-            )
+    with col2:
+        origem = st.selectbox(
+            "Origem", origens,  # Usando a lista 'origens', que tem apenas "MOEGA 1" e "MOEGA 2"
+                index=origens.index(st.session_state.get(f"origem_{i}", origens[0])),  # Corrigido para usar 'origens'
+                    key=f"select_origem_{i}"
+    )
 
-        with col3:
-            destino = st.selectbox(
-                "Destino", list(G.nodes),
-                index=list(G.nodes).index(st.session_state.get(f"destino_{i}", list(G.nodes)[1])),
-                key=f"select_destino_{i}"
-            )
+    with col3:
+        destino = st.selectbox(
+            "Destino", destinos,  # Usando a lista 'destinos', que tem "SP1" até "SP10"
+                index=destinos.index(st.session_state.get(f"destino_{i}", destinos[0])),  # Corrigido para usar 'destinos'
+                    key=f"select_destino_{i}"
+    )
+
 
         with col4:
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
