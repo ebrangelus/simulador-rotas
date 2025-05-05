@@ -110,40 +110,26 @@ for i, rota in enumerate(rotas):
             else:
                 st.markdown("🔴")
 
-# Após botões, desenhar ou mostrar mensagem
-if status == "executando":
-    st.session_state[f"origem_{i}"] = origem
-    st.session_state[f"destino_{i}"] = destino
+        # Após botões, desenhar ou mostrar mensagem
+        if status == "executando":
+            st.session_state[f"origem_{i}"] = origem
+            st.session_state[f"destino_{i}"] = destino
 
-    # Verifica se o caminho existe
-    if nx.has_path(G, origem, destino):
-        caminho = nx.shortest_path(G, origem, destino)
+            if nx.has_path(G, origem, destino):
+                caminho = nx.shortest_path(G, origem, destino)
 
-        conflito = False
+                conflito = False
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                    if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                        conflito = True
+                        st.error(f"⚠️ Conflito com {rotas[j]}!")
+                        break
 
-        # Verifica se já existe um caminho com o mesmo destino ou com o mesmo trajeto
-        for j, outro_caminho in st.session_state["rotas_ativas"].items():
-            if i == j:
-                continue
-
-            # Verifica se há conflito com o caminho (mesmas arestas)
-            if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
-                conflito = True
-                st.error(f"⚠️ Conflito com {rotas[j]}!")
-                break
-
-            # Verifica se o destino já está em uso
-            if destino == st.session_state.get(f"destino_{j}"):
-                conflito = True
-                st.error(f"⚠️ Destino já em uso por {rotas[j]}!")
-                break
-
-        # Se não houver conflitos, armazena a rota como ativa
-        if not conflito:
-            st.session_state["rotas_ativas"][i] = caminho
-            st.success(f"{rota}: {' → '.join(caminho)}")
-            # desenha_rota(caminho)
-        else:
-            st.error(f"{rota}: Conflito detectado, rota não foi adicionada.")
-    else:
-        st.error(f"{rota}: Caminho inválido")
+                if not conflito:
+                    st.session_state["rotas_ativas"][i] = caminho
+                    st.success(f"{rota}: {' → '.join(caminho)}")
+                    # desenha_rota(caminho)
+            else:
+                st.error(f"{rota}: Caminho inválido")
