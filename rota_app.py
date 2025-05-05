@@ -7,12 +7,17 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 # Criar grafo de exemplo
 G = nx.DiGraph()
 G.add_edges_from([
-    ("A", "B"), ("B", "C"), ("C", "D"),
-    ("A", "D"), ("D", "E"), ("E", "F"),
-    ("F", "G"), ("B", "E"), ("C", "F")
+    ("MOEGA 1", "SP1"), ("MOEGA 1", "SP2"), ("MOEGA 1", "SP3"), ("MOEGA 1", "SP4"),
+    ("MOEGA 1", "SP5"), ("MOEGA 1", "SP6"), ("MOEGA 1", "SP7"), ("MOEGA 1", "SP8"),
+    ("MOEGA 1", "SP9"), ("MOEGA 1", "SP10"),
+    ("MOEGA 2", "SP1"), ("MOEGA 2", "SP2"), ("MOEGA 2", "SP3"), ("MOEGA 2", "SP4"),
+    ("MOEGA 2", "SP5"), ("MOEGA 2", "SP6"), ("MOEGA 2", "SP7"), ("MOEGA 2", "SP8"),
+    ("MOEGA 2", "SP9"), ("MOEGA 2", "SP10")
 ])
 
-rotas = [f"Rota {i+1}" for i in range(10)]
+# Definir os destinos fixos
+origens = ["MOEGA 1", "MOEGA 2"]
+destinos = [f"SP{i}" for i in range(1, 11)]
 
 # Inicializações
 if "rotas_ativas" not in st.session_state:
