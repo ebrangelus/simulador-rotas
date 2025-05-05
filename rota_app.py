@@ -8,12 +8,12 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 G = nx.DiGraph()
 
 # MOEGA 1
-G.add_edge("MOEGA 1", "REG-123")
-G.add_edge("REG-123", "V-123")
+G.add_edge("MOEGA 1", "REG-1")
+G.add_edge("REG-1", "V-1")
 
 # MOEGA 2
-G.add_edge("MOEGA 2", "REG-456")
-G.add_edge("REG-456", "V-456")
+G.add_edge("MOEGA 2", "REG-4")
+G.add_edge("REG-4", "V-4")
 
 
 # Definir os destinos fixos
