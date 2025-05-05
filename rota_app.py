@@ -100,11 +100,11 @@ for i, rota in enumerate(rotas):
                     key=f"select_destino_{i}")
 
 
-    with col6:
-        if st.session_state["status_rotas"][i] == "executando":
-            caminho = st.session_state["rotas_ativas"].get(i)
-                if caminho:
-                    st.success(f"{rota}: {' → '.join(caminho)}")
+with col6:
+    caminho = st.session_state["rotas_ativas"].get(i)
+    if caminho and st.session_state["status_rotas"][i] == "executando":
+        st.success(f"{rota}: {' → '.join(caminho)}")
+
 
         with col7:
             if st.form_submit_button("▶️"):
