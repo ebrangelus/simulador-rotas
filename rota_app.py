@@ -16,12 +16,20 @@ destinos = ["Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
 G.add_nodes_from(origens + intermediarios + destinos)
 
 # Adicionando as arestas
-# MOEGA 1 manda para V-1
+
+# MOEGA1 manda para V-1
 G.add_edge("MOEGA 1", "V-1")
+
+# MOEGA2 manda para V-1
+G.add_edge("MOEGA 2", "V-4")
 
 # V-1 manda para CT-1 ou CT-2
 G.add_edge("V-1", "CT-1")
 G.add_edge("V-1", "CT-2")
+
+# V-41 manda para CT-1 ou CT-2
+G.add_edge("V-4", "CT-1")
+G.add_edge("V-4", "CT-2")
 
 # CT-1 manda para V-7
 G.add_edge("CT-1", "V-7")
