@@ -6,7 +6,7 @@ G = nx.DiGraph()
 
 # Definindo nós e arestas
 G.add_edges_from([
-    ("MR 1 - Moega", "MR 2 - Moega"),
+    ("Moega", "Correia A"),
     ("Correia A", "Elevador 1"),
     ("Elevador 1", "Válvula 1"),
     ("Válvula 1", "Silo 1"),
@@ -35,18 +35,5 @@ st.title("Simulador de Rotas - Planta de Grãos")
 # Lista de rotas
 rotas = ["Rota 1", "Rota 2", "Rota 3", "Rota 4", "Rota 5", "Rota 6", "Rota 7", "Rota 8", "Rota 9", "Rota 10"]
 
-# Selecione a rota a ser editada
-rota_selecionada = st.selectbox("Selecione a rota", rotas)
-
-# Selecione a origem e destino da rota
-origem = st.selectbox("Selecione a origem:", list(G.nodes))
-destino = st.selectbox("Selecione o destino:", list(G.nodes))
-
-# Exibe as opções de rota ao selecionar origem e destino
-if st.button("Mostrar opções de rota"):
-    if nx.has_path(G, origem, destino):
-        caminho = nx.shortest_path(G, origem, destino)
-        st.success(f"Rota encontrada: {' → '.join(caminho)}")
-        desenha_rota(caminho)
-    else:
-        st.error("Não há caminho possível entre os pontos selecionados.")
+# Colocando a lista de rotas e as caixas de seleção na mesma linha
+col1, col2 = st.columns([1, 3])  # Coluna esquerda (para rotas) e direita (para
