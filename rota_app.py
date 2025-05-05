@@ -12,10 +12,8 @@ G.add_edges_from([
     ("F", "G"), ("B", "E"), ("C", "F")
 ])
 
-# Lista fixa de rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
 
-# Função para desenhar a rota
 def desenha_rota(caminho):
     pos = nx.spring_layout(G)
     plt.figure(figsize=(8, 6))
@@ -24,9 +22,12 @@ def desenha_rota(caminho):
     nx.draw_networkx_edges(G, pos, edgelist=edge_path, edge_color="red", width=3)
     st.pyplot(plt)
 
+# 🚨 Inicializar as rotas já ativadas (se não existir ainda)
+if "rotas_ativas" not in st.session_state:
+    st.session_state["rotas_ativas"] = {}
+
 st.title("Simulador de Rotas Industriais")
 
-# Layout da página: lista de rotas à esquerda
 for i, rota in enumerate(rotas):
     with st.form(key=f"form_rota_{i}"):
         col1, col2, col3, col4 = st.columns([1, 3, 3, 2])
@@ -61,7 +62,23 @@ for i, rota in enumerate(rotas):
 
             if nx.has_path(G, origem, destino):
                 caminho = nx.shortest_path(G, origem, destino)
-                st.success(f"{rota}: {origem} → {destino}: {' → '.join(caminho)}")
-                desenha_rota(caminho)
+
+                # 🚨 Verificar conflitos com outras rotas já ativas
+                conflito = False
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                    # Verificar interseção de arestas
+                    arestas_caminho = set(zip(caminho, caminho[1:]))
+                    arestas_outra = set(zip(outro_caminho, outro_caminho[1:]))
+                    if arestas_caminho & arestas_outra:
+                        conflito = True
+                        st.error(f"⚠️ Conflito com {rotas[j]}! Rota compartilhando trechos.")
+                        break
+
+                if not conflito:
+                    st.success(f"{rota}: {origem} → {destino}: {' → '.join(caminho)}")
+                    st.session_state["rotas_ativas"][i] = caminho  # 🚨 Salvar a rota
+                    desenha_rota(caminho)
             else:
                 st.error(f"{rota}: Sem caminho entre {origem} e {destino}")
