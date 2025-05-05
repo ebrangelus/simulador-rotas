@@ -15,7 +15,7 @@ secador = ["Não", "SEC-1", "SEC-2"]
 destinos = ["Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
 
 # Adicionando os nós no grafo
-G.add_nodes_from(origens + limpeza + intermediarios + secador + destinos)
+G.add_nodes_from(origens + intermediarios + destinos)
 
 # Adicionando as arestas
 
@@ -71,7 +71,7 @@ st.title("Simulador de Rotas Industriais")
 
 for i, rota in enumerate(rotas):
     with st.form(key=f"form_rota_{i}"):
-        col1, col2, col3, col4, col5, col6, col7, col8, col9, col10 = st.columns([1, 2, 2, 2, 2, 1, 1, 1, 1, 1])
+        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns([1, 2.5, 2.5, 2, 1, 1, 1, 1])
         
     with col1:
             st.write(f"**{rota}**")
@@ -80,30 +80,33 @@ for i, rota in enumerate(rotas):
         origem = st.selectbox(
             "Origem", origens,  # Usando a lista 'origens', que tem apenas "MOEGA 1" e "MOEGA 2"
                 index=origens.index(st.session_state.get(f"origem_{i}", origens[0])),  # Corrigido para usar 'origens'
-                    key=f"select_origem_{i}")
+                    key=f"select_origem_{i}"
+    )
         
     with col3:
         prelimpeza = st.selectbox(
             "Pré Limpeza", limpeza,  # Usando a lista 'limpeza', que tem apenas "MOEGA 1" e "MOEGA 2"
                 index=limpeza.index(st.session_state.get(f"prelimpeza_{i}", limpeza[0])),  # Corrigido para usar 'origens'
-                    key=f"select_prelimpeza_{i}")  
+                    key=f"select_prelimpeza_{i}"
+    )    
         
     with col4:
-        origemsecador = st.selectbox(
-            "Secador", secador,  # Usando a lista 'secador', que tem "SP1" até "SP10"
-                index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),  # Corrigido para usar 'destinos'
-                    key=f"select_origemsecador_{i}")        
-    with col5:
         destino = st.selectbox(
             "Destino", destinos,  # Usando a lista 'destinos', que tem "SP1" até "SP10"
                 index=destinos.index(st.session_state.get(f"destino_{i}", destinos[0])),  # Corrigido para usar 'destinos'
-                    key=f"select_destino_{i}")
+                    key=f"select_destino_{i}"
+    )
+    with col5:
+        origemsecador = st.selectbox(
+            "Secador", secador,  # Usando a lista 'secador', que tem "SP1" até "SP10"
+                index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),  # Corrigido para usar 'destinos'
+                    key=f"select_origemsecador_{i}"
+    )
 
-
-    with col6:
+        with col6:
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
-    with col7:
+        with col7:
             if st.form_submit_button("▶️"):
                 if nx.has_path(G, origem, destino):
                     caminho = nx.shortest_path(G, origem, destino)
@@ -124,23 +127,23 @@ for i, rota in enumerate(rotas):
                         st.session_state[f"destino_{i}"] = destino
                         st.session_state["status_rotas"][i] = "executando"
                         st.session_state["rotas_ativas"][i] = caminho
-                        #st.success(f"{rota}: {' → '.join(caminho)}")
+                        st.success(f"{rota}: {' → '.join(caminho)}")
                         #desenha_rota(caminho)
                 else:
                     st.error("⚠️ Caminho inválido")
                     st.session_state["status_rotas"][i] = "parado"
 
         
-    with col8:
+        with col8:
             if st.form_submit_button("⏸️"):
                 st.session_state["status_rotas"][i] = "pausado"
         
-    with col9:
+        with col9:
             if st.form_submit_button("⏹️"):
                 st.session_state["status_rotas"][i] = "parado"
                 st.session_state["rotas_ativas"].pop(i, None)
         
-    with col10:
+        with col10:
             status = st.session_state["status_rotas"][i]
             if status == "executando":
                 st.markdown("🟢")
@@ -150,9 +153,9 @@ for i, rota in enumerate(rotas):
                 st.markdown("🔴")
 
         # Após botões, desenhar ou mostrar mensagem
-            if status == "executando":
-                st.session_state[f"origem_{i}"] = origem
-                st.session_state[f"destino_{i}"] = destino
+        if status == "executando":
+            st.session_state[f"origem_{i}"] = origem
+            st.session_state[f"destino_{i}"] = destino
 
             if nx.has_path(G, origem, destino):
                 caminho = nx.shortest_path(G, origem, destino)
