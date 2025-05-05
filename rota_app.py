@@ -80,32 +80,31 @@ for i, rota in enumerate(rotas):
         origem = st.selectbox(
             "Origem", origens,  # Usando a lista 'origens', que tem apenas "MOEGA 1" e "MOEGA 2"
                 index=origens.index(st.session_state.get(f"origem_{i}", origens[0])),  # Corrigido para usar 'origens'
-                    key=f"select_origem_{i}"
-    )
+                    key=f"select_origem_{i}")
         
     with col3:
         prelimpeza = st.selectbox(
             "Pré Limpeza", limpeza,  # Usando a lista 'limpeza', que tem apenas "MOEGA 1" e "MOEGA 2"
                 index=limpeza.index(st.session_state.get(f"prelimpeza_{i}", limpeza[0])),  # Corrigido para usar 'origens'
-                    key=f"select_prelimpeza_{i}"
-    )  
+                    key=f"select_prelimpeza_{i}")  
         
     with col4:
         origemsecador = st.selectbox(
             "Secador", secador,  # Usando a lista 'secador', que tem "SP1" até "SP10"
                 index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),  # Corrigido para usar 'destinos'
-                    key=f"select_origemsecador_{i}"
-    )        
+                    key=f"select_origemsecador_{i}")        
     with col5:
         destino = st.selectbox(
             "Destino", destinos,  # Usando a lista 'destinos', que tem "SP1" até "SP10"
                 index=destinos.index(st.session_state.get(f"destino_{i}", destinos[0])),  # Corrigido para usar 'destinos'
-                    key=f"select_destino_{i}"
-    )
+                    key=f"select_destino_{i}")
 
 
-        with col6:
-            st.success(f"{rota}: {' → '.join(caminho)}")
+    with col6:
+        if st.session_state["status_rotas"][i] == "executando":
+            caminho = st.session_state["rotas_ativas"].get(i)
+                if caminho:
+                    st.success(f"{rota}: {' → '.join(caminho)}")
 
         with col7:
             if st.form_submit_button("▶️"):
