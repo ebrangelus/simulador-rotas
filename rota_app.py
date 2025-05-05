@@ -35,19 +35,6 @@ st.title("Simulador de Rotas - Planta de Grãos")
 # Lista de rotas
 rotas = ["Rota 1", "Rota 2", "Rota 3", "Rota 4", "Rota 5", "Rota 6", "Rota 7", "Rota 8", "Rota 9", "Rota 10"]
 
-# Exibindo as rotas e os campos para origem e destino
+# Exibindo as rotas na mesma linha
 for i, rota in enumerate(rotas):
-    st.markdown(f"### **{rota}**")
-    
-    # Seleção de origem e destino para cada rota
-    origem = st.selectbox(f"Selecione a origem para {rota}:", list(G.nodes), key=f"origem_{i}")
-    destino = st.selectbox(f"Selecione o destino para {rota}:", list(G.nodes), key=f"destino_{i}")
-    
-    # Botão para mostrar a rota
-    if st.button(f"Mostrar opções de rota para {rota}", key=f"botao_{i}"):
-        if nx.has_path(G, origem, destino):
-            caminho = nx.shortest_path(G, origem, destino)
-            st.success(f"Rota encontrada para {rota}: {' → '.join(caminho)}")
-            desenha_rota(caminho)
-        else:
-            st.error(f"Não há caminho possível entre {origem} e {destino} para {rota}.")
+    col1, col2, col3, col4 = st.columns([1, 3]()
