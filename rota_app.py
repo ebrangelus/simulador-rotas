@@ -24,7 +24,7 @@ G.add_edge("REG-5", "V-5")
 G.add_edge("REG-6", "V-6")
 
 # Definir os destinos fixos
-origem = ["MOEGA 1", "MOEGA 2"]
+origens = ["MOEGA 1", "MOEGA 2"]
 
 #Valvulas para o Destino CT
 for i in range(1, 7):
