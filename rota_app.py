@@ -19,6 +19,9 @@ G.add_edges_from([
 origens = ["MOEGA 1", "MOEGA 2"]
 destinos = [f"SP{i}" for i in range(1, 11)]
 
+# Definir as rotas
+rotas = ['Rota 1', 'Rota 2', 'Rota 3', 'Rota 4',  'Rota 5',  'Rota 6',  'Rota 7',  'Rota 8',  'Rota 9',  'Rota 10']
+
 # Inicializações
 if "rotas_ativas" not in st.session_state:
     st.session_state["rotas_ativas"] = {}
