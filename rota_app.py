@@ -90,13 +90,13 @@ for i, rota in enumerate(rotas):
                     key=f"select_prelimpeza_{i}"
     )    
         
-    with col4:
+    with col5:
         destino = st.selectbox(
             "Destino", destinos,  # Usando a lista 'destinos', que tem "SP1" até "SP10"
                 index=destinos.index(st.session_state.get(f"destino_{i}", destinos[0])),  # Corrigido para usar 'destinos'
                     key=f"select_destino_{i}"
     )
-    with col5:
+    with col4:
         origemsecador = st.selectbox(
             "Secador", secador,  # Usando a lista 'secador', que tem "SP1" até "SP10"
                 index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),  # Corrigido para usar 'destinos'
