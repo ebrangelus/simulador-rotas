@@ -105,7 +105,7 @@ for i, rota in enumerate(rotas):
 
 
         with col6:
-            Rota = st.text_input("Comentário", key=f"comentario_{i}")
+            rotaon = st.text_input("ROTA", key=f"rotaon_{i}")
 
         with col7:
             if st.form_submit_button("▶️"):
