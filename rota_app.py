@@ -101,10 +101,10 @@ for i, rota in enumerate(rotas):
 
 
 with col6:
-    if st.session_state["status_rotas"][i] == "executando":
-        caminho = st.session_state["rotas_ativas"].get(i)
-        if caminho:
-            st.success(f"{rota}: {' → '.join(caminho)}")
+    #if st.session_state["status_rotas"][i] == "executando":
+     #   caminho = st.session_state["rotas_ativas"].get(i)
+      #  if caminho:
+       #     st.success(f"{rota}: {' → '.join(caminho)}")
 
 
 
