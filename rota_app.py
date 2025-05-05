@@ -71,7 +71,7 @@ st.title("Simulador de Rotas Industriais")
 
 for i, rota in enumerate(rotas):
     with st.form(key=f"form_rota_{i}"):
-        col1, col2, col3, col4, col5, col6, col7, col8 , col9, col10 = st.columns([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+        col1, col2, col3, col4, col5, col6, col7, col8 , col9, col10, col11 = st.columns([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2])
         
     with col1:
             st.write(f"**{rota}**")
@@ -175,3 +175,5 @@ for i, rota in enumerate(rotas):
                     # desenha_rota(caminho)
             else:
                 st.error(f"{rota}: Caminho inválido")
+        with col11:
+            st.success(f"{rota}: {' → '.join(caminho)}")   
