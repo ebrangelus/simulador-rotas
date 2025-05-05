@@ -126,6 +126,11 @@ for i, rota in enumerate(rotas):
                         conflito = True
                         st.error(f"⚠️ Conflito com {rotas[j]}!")
                         break
+    # Verifica se o destino já está em uso
+                    if destino == st.session_state.get(f"destino_{j}"):
+                        conflito = True
+                        st.error(f"⚠️ Destino já em uso por {rotas[j]}!")
+                        break                        
 
                 if not conflito:
                     st.session_state["rotas_ativas"][i] = caminho
