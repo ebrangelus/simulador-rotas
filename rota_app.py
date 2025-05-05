@@ -105,7 +105,7 @@ for i, rota in enumerate(rotas):
 
 
         with col6:
-            rotaon = st.text_input("ROTA", key=f"rotaon_{i}")
+            rotaon = st.success(f"{rota}: {' → '.join(caminho)}")
 
         with col7:
             if st.form_submit_button("▶️"):
