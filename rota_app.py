@@ -37,15 +37,4 @@ rotas = ["Rota 1", "Rota 2", "Rota 3", "Rota 4", "Rota 5", "Rota 6", "Rota 7", "
 
 # Exibindo as rotas na mesma linha
 for i, rota in enumerate(rotas):
-    col1, col2, col3, col4 = st.columns([1, 3, 3, 4])  # Dividindo a tela em 4 colunas: 1 para Rota, 3 para Origem, 3 para Destino e 4 para Comentário
-    
-    # Exibindo o nome da rota
-    with col1:
-        st.write(f"**{rota}**")
-    
-    # Exibindo as caixas de origem e destino
-    with col2:
-        origem = st.selectbox(f"Origem para {rota}:", list(G.nodes), key=f"origem_{i}")
-    
-    with col3:
-        destino = st.selectbox(f"Destino para {rota}:", list(G.nodes), key
+    col1, col2,
