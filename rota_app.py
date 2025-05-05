@@ -37,7 +37,7 @@ destinos = ["CT-1", "CT-2"]
 rotas = ['Rota 1', 'Rota 2', 'Rota 3', 'Rota 4',  'Rota 5',  'Rota 6',  'Rota 7',  'Rota 8',  'Rota 9',  'Rota 10']
 
 #Definir Caminho mais curto
-caminho = nx.shortest_path(G, origem, destino)
+#caminho = nx.shortest_path(G, origem, destino)
 
 # Inicializações
 if "rotas_ativas" not in st.session_state:
