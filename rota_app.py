@@ -6,31 +6,21 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 
 # Criar grafo de exemplo
 G = nx.DiGraph()
-
-# MOEGA 1
-G.add_edge("MOEGA 1", "REG-1")
-G.add_edge("REG-1", "V-1")
-
-# MOEGA 2
-G.add_edge("MOEGA 2", "REG-4")
-G.add_edge("REG-4", "V-4")
-
+G.add_edges_from([
+    ("MOEGA 1", "SP1"), ("MOEGA 1", "SP2"), ("MOEGA 1", "SP3"), ("MOEGA 1", "SP4"),
+    ("MOEGA 1", "SP5"), ("MOEGA 1", "SP6"), ("MOEGA 1", "SP7"), ("MOEGA 1", "SP8"),
+    ("MOEGA 1", "SP9"), ("MOEGA 1", "SP10"),
+    ("MOEGA 2", "SP1"), ("MOEGA 2", "SP2"), ("MOEGA 2", "SP3"), ("MOEGA 2", "SP4"),
+    ("MOEGA 2", "SP5"), ("MOEGA 2", "SP6"), ("MOEGA 2", "SP7"), ("MOEGA 2", "SP8"),
+    ("MOEGA 2", "SP9"), ("MOEGA 2", "SP10")
+])
 
 # Definir os destinos fixos
 origens = ["MOEGA 1", "MOEGA 2"]
-
-#Valvulas para o Destino CT
-for i in range(1, 7):
-    G.add_edge(f"V-{i}", "CT-1")
-    G.add_edge(f"V-{i}", "CT-2")
-
-destinos = ["CT-1", "CT-2"]
+destinos = [f"SP{i}" for i in range(1, 11)]
 
 # Definir as rotas
 rotas = ['Rota 1', 'Rota 2', 'Rota 3', 'Rota 4',  'Rota 5',  'Rota 6',  'Rota 7',  'Rota 8',  'Rota 9',  'Rota 10']
-
-#Definir Caminho mais curto
-#caminho = nx.shortest_path(G, origem, destino)
 
 # Inicializações
 if "rotas_ativas" not in st.session_state:
@@ -121,42 +111,25 @@ for i, rota in enumerate(rotas):
                 st.markdown("🔴")
 
         # Após botões, desenhar ou mostrar mensagem
-if status == "executando":
-    st.session_state[f"origem_{i}"] = origem
-    st.session_state[f"destino_{i}"] = destino
+        if status == "executando":
+            st.session_state[f"origem_{i}"] = origem
+            st.session_state[f"destino_{i}"] = destino
 
-    if nx.has_path(G, origem, destino):
-        caminho = nx.shortest_path(G, origem, destino)
+            if nx.has_path(G, origem, destino):
+                caminho = nx.shortest_path(G, origem, destino)
 
-        conflito = False
-        for j, outro_caminho in st.session_state["rotas_ativas"].items():
-            if i == j:
-                continue
-            if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
-                conflito = True
-                st.error(f"⚠️ Conflito com {rotas[j]}!")
-                break
+                conflito = False
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                    if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                        conflito = True
+                        st.error(f"⚠️ Conflito com {rotas[j]}!")
+                        break
 
-        if not conflito:
-            for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                if i == j:
-                    continue
-                if destino == outro_caminho[-1]:
-                    conflito = True
-                    st.error(f"⚠️ Destino {destino} já está sendo usado pela {rotas[j]}!")
-                    break
-
-if not conflito:
-    # Verifica se o destino já está em uso por outra rota
-    for j, outro_destino in st.session_state.items():
-        if j.startswith("destino_") and j != f"destino_{i}" and outro_destino == destino:
-            st.error(f"🚫 Destino {destino} já está sendo usado por outra rota!")
-            conflito = True
-            break
-
-    if not conflito:
-        st.session_state["rotas_ativas"][i] = caminho
-        st.success(f"{rota}: {' → '.join(caminho)}")
-
-    else:
-        st.error(f"{rota}: Caminho inválido")
+                if not conflito:
+                    st.session_state["rotas_ativas"][i] = caminho
+                    st.success(f"{rota}: {' → '.join(caminho)}")
+                    # desenha_rota(caminho)
+            else:
+                st.error(f"{rota}: Caminho inválido")
