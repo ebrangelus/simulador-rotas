@@ -168,8 +168,9 @@ for i, rota in enumerate(rotas):
                         conflito = True
                         st.error(f"⚠️ Conflito com {rotas[j]}!")
                         break
-        with col11:
+       
                 if not conflito:
+        with col11:
                     st.session_state["rotas_ativas"][i] = caminho
                     st.success(f"{rota}: {' → '.join(caminho)}")
                     # desenha_rota(caminho)
