@@ -88,23 +88,24 @@ for i, rota in enumerate(rotas):
             "Pré Limpeza", limpeza,  # Usando a lista 'limpeza', que tem apenas "MOEGA 1" e "MOEGA 2"
                 index=limpeza.index(st.session_state.get(f"prelimpeza_{i}", limpeza[0])),  # Corrigido para usar 'origens'
                     key=f"select_prelimpeza_{i}"
-    )    
+    )  
         
+    with col4:
+        origemsecador = st.selectbox(
+            "Secador", secador,  # Usando a lista 'secador', que tem "SP1" até "SP10"
+                index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),  # Corrigido para usar 'destinos'
+                    key=f"select_origemsecador_{i}"
+    )        
     with col5:
         destino = st.selectbox(
             "Destino", destinos,  # Usando a lista 'destinos', que tem "SP1" até "SP10"
                 index=destinos.index(st.session_state.get(f"destino_{i}", destinos[0])),  # Corrigido para usar 'destinos'
                     key=f"select_destino_{i}"
     )
-    with col4:
-        origemsecador = st.selectbox(
-            "Secador", secador,  # Usando a lista 'secador', que tem "SP1" até "SP10"
-                index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),  # Corrigido para usar 'destinos'
-                    key=f"select_origemsecador_{i}"
-    )
+
 
         with col6:
-            comentario = st.text_input("Comentário", key=f"comentario_{i}")
+            Rota = st.text_input("Comentário", key=f"comentario_{i}")
 
         with col7:
             if st.form_submit_button("▶️"):
