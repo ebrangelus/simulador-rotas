@@ -175,5 +175,3 @@ for i, rota in enumerate(rotas):
                     # desenha_rota(caminho)
             else:
                 st.error(f"{rota}: Caminho inválido")
-        with col11:
-            st.success(f"{rota}: {' → '.join(caminho)}")   
