@@ -1,10 +1,8 @@
 import streamlit as st
 import networkx as nx
 
-# Criando o grafo com as rotas
+# Criando o grafo
 G = nx.DiGraph()
-
-# Definindo nós e arestas
 G.add_edges_from([
     ("Moega", "Correia A"),
     ("Correia A", "Elevador 1"),
@@ -15,7 +13,7 @@ G.add_edges_from([
     ("Válvula 2", "Secador")
 ])
 
-# Função para desenhar o grafo
+# Função para desenhar a rota
 def desenha_rota(rota):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -29,33 +27,42 @@ def desenha_rota(rota):
     nx.draw(G, pos, with_labels=True, node_color="lightblue", edge_color=edge_colors, width=2.5, node_size=1500, arrows=True, ax=ax)
     st.pyplot(fig)
 
-# Interface Streamlit
+# Lista de rotas
+rotas = [f"Rota {i+1}" for i in range(10)]
+
+# Inicializar session_state
+for i in range(10):
+    if f"origem_{i}" not in st.session_state:
+        st.session_state[f"origem_{i}"] = list(G.nodes)[0]
+    if f"destino_{i}" not in st.session_state:
+        st.session_state[f"destino_{i}"] = list(G.nodes)[1]
+
 st.title("Simulador de Rotas - Planta de Grãos")
 
-# Lista de rotas
-rotas = ["Rota 1", "Rota 2", "Rota 3", "Rota 4", "Rota 5", "Rota 6", "Rota 7", "Rota 8", "Rota 9", "Rota 10"]
-
-# Exibindo as rotas na mesma linha
+# Exibindo cada rota em linha
 for i, rota in enumerate(rotas):
-    col1, col2, col3, col4 = st.columns([1, 3, 3, 4])  # Dividindo a tela em 4 colunas: 1 para Rota, 3 para Origem, 3 para Destino e 4 para Comentário
-    
-    # Exibindo o nome da rota
+    col1, col2, col3, col4 = st.columns([1, 3, 3, 4])
+
     with col1:
         st.write(f"**{rota}**")
-    
-    # Exibindo as caixas de origem e destino
+
     with col2:
-        origem = st.selectbox(f"Origem para {rota}:", list(G.nodes), key=f"origem_{i}")
-    
+        st.session_state[f"origem_{i}"] = st.selectbox(
+            f"Origem para {rota}:", list(G.nodes), key=f"select_origem_{i}", index=list(G.nodes).index(st.session_state[f"origem_{i}"])
+        )
+
     with col3:
-        destino = st.selectbox(f"Destino para {rota}:", list(G.nodes), key=f"destino_{i}")
-    
-    # Exibindo o comentário e o botão para visualizar a rota
+        st.session_state[f"destino_{i}"] = st.selectbox(
+            f"Destino para {rota}:", list(G.nodes), key=f"select_destino_{i}", index=list(G.nodes).index(st.session_state[f"destino_{i}"])
+        )
+
     with col4:
-        if st.button(f"Mostrar rota para {rota}", key=f"botao_{i}"):
+        if st.button(f"Mostrar rota para {rota}", key=f"mostrar_rota_{i}"):
+            origem = st.session_state[f"origem_{i}"]
+            destino = st.session_state[f"destino_{i}"]
             if nx.has_path(G, origem, destino):
                 caminho = nx.shortest_path(G, origem, destino)
-                st.success(f"Rota encontrada para {rota}: {' → '.join(caminho)}")
+                st.success(f"Rota de {origem} até {destino}: {' → '.join(caminho)}")
                 desenha_rota(caminho)
             else:
                 st.error(f"Não há caminho possível entre {origem} e {destino} para {rota}.")
