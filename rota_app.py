@@ -4,20 +4,40 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 
-# Criar grafo de exemplo
+# Criação do grafo direcionado
 G = nx.DiGraph()
-G.add_edges_from([
-    ("MOEGA 1", "SP1"), ("MOEGA 1", "SP2"), ("MOEGA 1", "SP3"), ("MOEGA 1", "SP4"),
-    ("MOEGA 1", "SP5"), ("MOEGA 1", "SP6"), ("MOEGA 1", "SP7"), ("MOEGA 1", "SP8"),
-    ("MOEGA 1", "SP9"), ("MOEGA 1", "SP10"),
-    ("MOEGA 2", "SP1"), ("MOEGA 2", "SP2"), ("MOEGA 2", "SP3"), ("MOEGA 2", "SP4"),
-    ("MOEGA 2", "SP5"), ("MOEGA 2", "SP6"), ("MOEGA 2", "SP7"), ("MOEGA 2", "SP8"),
-    ("MOEGA 2", "SP9"), ("MOEGA 2", "SP10")
-])
 
-# Definir os destinos fixos
-origens = ["MOEGA 1", "MOEGA 2"]
-destinos = [f"SP{i}" for i in range(1, 11)]
+# Definindo os nós (origens, intermediários, destinos)
+origens = ["MOEGA 1"]
+intermediarios = ["V-1", "V-7", "V-8"]
+destinos = ["CT-1", "CT-2", "Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
+
+# Adicionando os nós no grafo
+G.add_nodes_from(origens + intermediarios + destinos)
+
+# Adicionando as arestas
+# MOEGA 1 manda para V-1
+G.add_edge("MOEGA 1", "V-1")
+
+# V-1 manda para CT-1 ou CT-2
+G.add_edge("V-1", "CT-1")
+G.add_edge("V-1", "CT-2")
+
+# CT-1 manda para V-7
+G.add_edge("CT-1", "V-7")
+
+# CT-2 manda para V-8
+G.add_edge("CT-2", "V-8")
+
+# V-7 manda para Elevador-1 ou Elevador-3
+G.add_edge("V-7", "Elevador-1")
+G.add_edge("V-7", "Elevador-3")
+
+# V-8 manda para Elevador-2 ou Elevador-4
+G.add_edge("V-8", "Elevador-2")
+G.add_edge("V-8", "Elevador-4")
+
+# O grafo agora está montado com as rotas possíveis
 
 # Definir as rotas
 rotas = ['Rota 1', 'Rota 2', 'Rota 3', 'Rota 4',  'Rota 5',  'Rota 6',  'Rota 7',  'Rota 8',  'Rota 9',  'Rota 10']
