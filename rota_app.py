@@ -111,7 +111,7 @@ for i, rota in enumerate(rotas):
 mensagem_erro = None
 mensagem_sucesso = None
 
-        with col7:
+       with col7:
             if st.form_submit_button("▶️"):
                 if nx.has_path(G, origem, destino):
                     caminho = nx.shortest_path(G, origem, destino)
