@@ -120,7 +120,7 @@ for i, rota in enumerate(rotas):
                             break
 
                     if conflito:
-                        st.error(f"⚠️ Conflito com outra rota ativa!")
+                       # st.error(f"⚠️ Conflito com outra rota ativa!")
                         st.session_state["status_rotas"][i] = "parado"
                     else:
                         st.session_state[f"origem_{i}"] = origem
