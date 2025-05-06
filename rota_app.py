@@ -111,7 +111,11 @@ for i, rota in enumerate(rotas):
                     st.session_state[f"origemsecador_{i}"] = origemsecador
                     st.session_state["status_rotas"][i] = "executando"
                     st.session_state["rotas_ativas"][i] = caminho
+                    # limpa erro antigo
+                    st.session_state["mensagens_rotas"][i]["erro"] = None
+                    # define nova mensagem de sucesso
                     st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
+
             else:
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
