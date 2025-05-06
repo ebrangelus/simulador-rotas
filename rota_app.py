@@ -106,6 +106,9 @@ for i, rota in enumerate(rotas):
         with col6:
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
+#para aparecer msg la na coluna 11
+mensagem_col11 = None  # inicializa como None
+
         with col7:
             if st.form_submit_button("▶️"):
                 if nx.has_path(G, origem, destino):
@@ -120,7 +123,7 @@ for i, rota in enumerate(rotas):
                             break
 
                     if conflito:
-                       # st.error(f"⚠️ Conflito com outra rota ativa!")
+                        mensagem_col11 = "⚠️ Conflito com outra rota ativa!"
                         st.session_state["status_rotas"][i] = "parado"
                     else:
                         st.session_state[f"origem_{i}"] = origem
@@ -153,6 +156,9 @@ for i, rota in enumerate(rotas):
                 st.markdown("🔴")
     with col11:
         # Após botões, desenhar ou mostrar mensagem
+        if mensagem_col11:
+            st.error(mensagem_col11)
+            break
         if status == "executando":
             st.session_state[f"origem_{i}"] = origem
             st.session_state[f"destino_{i}"] = destino
@@ -168,10 +174,6 @@ for i, rota in enumerate(rotas):
                         conflito = True
                         st.error(f"⚠️ Conflito com {rotas[j]}!")
                         break
-                if conflito:
-                    st.error(f"⚠️ Conflito com outra rota ativa!")
-                    st.session_state["status_rotas"][i] = "parado"
-                    break
                     
                 if not conflito:
                     st.session_state["rotas_ativas"][i] = caminho
