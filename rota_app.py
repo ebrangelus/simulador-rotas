@@ -112,15 +112,14 @@ mensagem_erro = None
 mensagem_sucesso = None
 
 with col7:
-            if st.form_submit_button("▶️"):
-                if nx.has_path(G, origem, destino):
-                    caminho = nx.shortest_path(G, origem, destino)
+    if st.form_submit_button("▶️"):
+        if nx.has_path(G, origem, destino):
+            caminho = nx.shortest_path(G, origem, destino)
 
-                    conflito = False
-                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                        if i == j:
-                        continue
-                        
+            conflito = False
+            for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                if i == j:
+                    continue
                 if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
                     conflito = True
                     mensagem_erro = f"⚠️ Conflito com {rotas[j]}!"
