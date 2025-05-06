@@ -107,7 +107,9 @@ for i, rota in enumerate(rotas):
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
 #para aparecer msg la na coluna 11
-mensagem_col11 = None  # inicializa como None
+
+mensagem_erro = None
+mensagem_sucesso = None
 
         with col7:
             if st.form_submit_button("▶️"):
@@ -117,25 +119,23 @@ mensagem_col11 = None  # inicializa como None
                     conflito = False
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
-                            continue
-                        if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
-                            conflito = True
-                            break
-
-                    if conflito:
-                        mensagem_col11 = "⚠️ Conflito com outra rota ativa!"
-                        st.session_state["status_rotas"][i] = "parado"
-                    else:
-                        st.session_state[f"origem_{i}"] = origem
-                        st.session_state[f"destino_{i}"] = destino
-                        st.session_state["status_rotas"][i] = "executando"
-                        st.session_state["rotas_ativas"][i] = caminho
-                        #st.success(f"{rota}: {' → '.join(caminho)}")
-                        #desenha_rota(caminho)
-                else:
-                    st.error("⚠️ Caminho inválido")
+                        continue
+                        
+                if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                    conflito = True
+                    mensagem_erro = f"⚠️ Conflito com {rotas[j]}!"
                     st.session_state["status_rotas"][i] = "parado"
+                    break
 
+            if not conflito:
+                st.session_state[f"origem_{i}"] = origem
+                st.session_state[f"destino_{i}"] = destino
+                st.session_state["status_rotas"][i] = "executando"
+                st.session_state["rotas_ativas"][i] = caminho
+                mensagem_sucesso = f"{rota}: {' → '.join(caminho)}"
+        else:
+            mensagem_erro = f"{rota}: Caminho inválido"
+            st.session_state["status_rotas"][i] = "parado"
         
         with col8:
             if st.form_submit_button("⏸️"):
@@ -154,30 +154,8 @@ mensagem_col11 = None  # inicializa como None
                 st.markdown("🟡")
             else:
                 st.markdown("🔴")
-    with col11:
-        # Após botões, desenhar ou mostrar mensagem
-        if mensagem_col11:
-            st.error(mensagem_col11)
-            break
-        if status == "executando":
-            st.session_state[f"origem_{i}"] = origem
-            st.session_state[f"destino_{i}"] = destino
-
-            if nx.has_path(G, origem, destino):
-                caminho = nx.shortest_path(G, origem, destino)
-
-                conflito = False
-                for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                    if i == j:
-                        continue
-                    if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
-                        conflito = True
-                        st.error(f"⚠️ Conflito com {rotas[j]}!")
-                        break
-                    
-                if not conflito:
-                    st.session_state["rotas_ativas"][i] = caminho
-                    st.success(f"{rota}: {' → '.join(caminho)}")
-                    # desenha_rota(caminho)
-            else:
-                st.error(f"{rota}: Caminho inválido")
+with col11:
+    if mensagem_erro:
+        st.error(mensagem_erro)
+    elif mensagem_sucesso:
+        st.success(mensagem_sucesso)
