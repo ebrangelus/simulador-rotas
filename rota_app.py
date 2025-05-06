@@ -153,8 +153,7 @@ for i, rota in enumerate(rotas):
                 st.markdown("🔴")
 
         # Após botões, desenhar ou mostrar mensagem
-        with col11:
-        if status == "executando":
+            if status == "executando":
             st.session_state[f"origem_{i}"] = origem
             st.session_state[f"destino_{i}"] = destino
 
