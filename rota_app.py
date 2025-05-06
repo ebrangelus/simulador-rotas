@@ -41,11 +41,8 @@ if "rotas_ativas" not in st.session_state:
 if "status_rotas" not in st.session_state:
     st.session_state["status_rotas"] = {i: "parado" for i in range(len(rotas))}
 
-if "mensagens_erro" not in st.session_state:
-    st.session_state["mensagens_erro"] = {i: None for i in range(len(rotas))}
-
-if "mensagens_sucesso" not in st.session_state:
-    st.session_state["mensagens_sucesso"] = {i: None for i in range(len(rotas))}
+if "mensagens_rotas" not in st.session_state:
+    st.session_state["mensagens_rotas"] = {i: {"erro": None, "sucesso": None} for i in range(len(rotas))}
 
 st.title("Simulador de Rotas Industriais")
 
@@ -93,7 +90,6 @@ for i, rota in enumerate(rotas):
         with col6:
             comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
-        # Mensagens de erro e sucesso armazenadas no session_state
         with col7:
             executar = st.form_submit_button("▶️")
 
@@ -113,6 +109,11 @@ for i, rota in enumerate(rotas):
                 st.markdown("🔴")
 
         with col11:
+            # Limpar mensagem de erro/sucesso quando uma nova ação for tomada
+            mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
+            mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
+
+            # Executando a rota
             if executar:
                 if nx.has_path(G, origem, destino):
                     caminho = nx.shortest_path(G, origem, destino)
@@ -122,7 +123,7 @@ for i, rota in enumerate(rotas):
                             continue
                         if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
                             conflito = True
-                            st.session_state["mensagens_erro"][i] = f"⚠️ Conflito com {rotas[j]}!"
+                            st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
                             st.session_state["status_rotas"][i] = "parado"
                             break
                     if not conflito:
@@ -132,10 +133,9 @@ for i, rota in enumerate(rotas):
                         st.session_state[f"origemsecador_{i}"] = origemsecador
                         st.session_state["status_rotas"][i] = "executando"
                         st.session_state["rotas_ativas"][i] = caminho
-                        st.session_state["mensagens_sucesso"][i] = f"{rota}: {' → '.join(caminho)}"
-                        st.session_state["mensagens_erro"][i] = None
+                        st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
                 else:
-                    st.session_state["mensagens_erro"][i] = f"{rota}: Caminho inválido"
+                    st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                     st.session_state["status_rotas"][i] = "parado"
 
             elif pausar:
@@ -144,8 +144,10 @@ for i, rota in enumerate(rotas):
             elif parar:
                 st.session_state["status_rotas"][i] = "parado"
                 st.session_state["rotas_ativas"].pop(i, None)
+                st.session_state["mensagens_rotas"][i]["erro"] = None
+                st.session_state["mensagens_rotas"][i]["sucesso"] = None
 
-            if st.session_state["mensagens_erro"][i]:
-                st.error(st.session_state["mensagens_erro"][i])
-            elif st.session_state["mensagens_sucesso"][i]:
-                st.success(st.session_state["mensagens_sucesso"][i])
+            if mensagem_erro:
+                st.error(mensagem_erro)
+            elif mensagem_sucesso:
+                st.success(mensagem_sucesso)
