@@ -50,31 +50,37 @@ for i, rota in enumerate(rotas):
         with col1:
             st.write(f"**{rota}**")
 
+        # Recupera os valores salvos anteriormente, se existirem
+        valor_origem = st.session_state.get(f"origem_{i}", origens[0])
+        valor_prelimpeza = st.session_state.get(f"prelimpeza_{i}", limpeza[0])
+        valor_destino = st.session_state.get(f"destino_{i}", destinos[0])
+        valor_secador = st.session_state.get(f"origemsecador_{i}", secador[0])
+
         with col2:
             origem = st.selectbox(
                 "Origem", origens,
-                index=origens.index(st.session_state.get(f"origem_{i}", origens[0])),
+                index=origens.index(valor_origem) if valor_origem in origens else 0,
                 key=f"select_origem_{i}"
             )
 
         with col3:
             prelimpeza = st.selectbox(
                 "Pré Limpeza", limpeza,
-                index=limpeza.index(st.session_state.get(f"prelimpeza_{i}", limpeza[0])),
+                index=limpeza.index(valor_prelimpeza) if valor_prelimpeza in limpeza else 0,
                 key=f"select_prelimpeza_{i}"
             )
 
         with col4:
             destino = st.selectbox(
                 "Destino", destinos,
-                index=destinos.index(st.session_state.get(f"destino_{i}", destinos[0])),
+                index=destinos.index(valor_destino) if valor_destino in destinos else 0,
                 key=f"select_destino_{i}"
             )
 
         with col5:
             origemsecador = st.selectbox(
                 "Secador", secador,
-                index=secador.index(st.session_state.get(f"origemsecador_{i}", secador[0])),
+                index=secador.index(valor_secador) if valor_secador in secador else 0,
                 key=f"select_origemsecador_{i}"
             )
 
@@ -118,6 +124,8 @@ for i, rota in enumerate(rotas):
                     if not conflito:
                         st.session_state[f"origem_{i}"] = origem
                         st.session_state[f"destino_{i}"] = destino
+                        st.session_state[f"prelimpeza_{i}"] = prelimpeza
+                        st.session_state[f"origemsecador_{i}"] = origemsecador
                         st.session_state["status_rotas"][i] = "executando"
                         st.session_state["rotas_ativas"][i] = caminho
                         mensagem_sucesso = f"{rota}: {' → '.join(caminho)}"
