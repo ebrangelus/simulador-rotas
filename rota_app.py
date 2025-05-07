@@ -149,16 +149,24 @@ for i, rota in enumerate(rotas):
                        subcaminho = subcaminho[1:]  # evita repetição de nós
                     caminho.extend(subcaminho)
 
-                # Verifica conflitos com outras rotas
+                # Verifica conflitos com outras rotas, ignorando nós compartilháveis
                 conflito = False
+                nodos_compartilhaveis = {"Sem Limpeza", "Sem Secador"}
+
+                arestas_atuais = {(a, b) for a, b in zip(caminho, caminho[1:]) if a not in nodos_compartilhaveis and b not in nodos_compartilhaveis}
+
                 for j, outro_caminho in st.session_state["rotas_ativas"].items():
                     if i == j:
                         continue
-                    if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+
+                    arestas_outros = {(a, b) for a, b in zip(outro_caminho, outro_caminho[1:]) if a not in nodos_compartilhaveis and b not in nodos_compartilhaveis}
+
+                    if arestas_atuais & arestas_outros:
                         conflito = True
                         st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
                         st.session_state["status_rotas"][i] = "parado"
                         break
+
 
                 if not conflito:
                     st.session_state[f"origem_{i}"] = origem
