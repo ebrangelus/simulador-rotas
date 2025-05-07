@@ -128,7 +128,7 @@ for i, rota in enumerate(rotas):
 
         # Verifica conflitos com outras rotas
                         conflito = False
-                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                        for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                         continue
             if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
