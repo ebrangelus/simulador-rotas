@@ -125,10 +125,10 @@ for i, rota in enumerate(rotas):
     with col6:
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
         
-    with col7:
-        if st.button("▶️ Executar", key=f"executar_{i}"):
+with col7:
+    if st.button("▶️ Executar", key=f"executar_{i}"):
         # Monta a rota completa com os nós obrigatórios
-            rota_completa = [origem]
+        rota_completa = [origem]
 
         if prelimpeza != "Sem Limpeza":
             rota_completa.append(prelimpeza)
