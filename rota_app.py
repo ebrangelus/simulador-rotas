@@ -139,15 +139,66 @@ for i, rota in enumerate(rotas):
 
             # Verifica se todos os trechos da rota têm caminho
             rota_valida = all(nx.has_path(G, rota_completa[i], rota_completa[i+1]) for i in range(len(rota_completa)-1))
-
+# -----------------------------------------------------------------------------------------------------------------------------
             if rota_valida:
-                # Constrói caminho real juntando os caminhos entre todos os trechos
-                caminho = []
-                for j in range(len(rota_completa)-1):
-                    subcaminho = nx.shortest_path(G, rota_completa[j], rota_completa[j+1])
-                    if j > 0:
-                       subcaminho = subcaminho[1:]  # evita repetição de nós
-                    caminho.extend(subcaminho)
+# Tenta construir o caminho trecho a trecho, com tentativa de resolver conflito
+caminho = []
+conflito = False
+
+for j in range(len(rota_completa) - 1):
+    origem_trecho = rota_completa[j]
+    destino_trecho = rota_completa[j + 1]
+
+    trecho_conflitante = True
+
+    # Primeiro tenta o caminho mais curto
+    try:
+        subcaminhos = [nx.shortest_path(G, origem_trecho, destino_trecho)]
+    except nx.NetworkXNoPath:
+        subcaminhos = []
+
+    # Se houve caminho, mas com conflito, tenta todos os caminhos mais curtos
+    if subcaminhos:
+        novos_caminhos = []
+        for sub in subcaminhos:
+            pares_arestas = set(zip(sub, sub[1:]))
+            conflito_local = any(
+                pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
+                for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
+            )
+            if not conflito_local:
+                trecho_conflitante = False
+                if j > 0:
+                    sub = sub[1:]  # evita repetição de nó anterior
+                caminho.extend(sub)
+                break
+
+        # Se todos conflitaram, tenta todos os caminhos mais curtos possíveis
+        if trecho_conflitante:
+            try:
+                for alt_sub in nx.all_shortest_paths(G, origem_trecho, destino_trecho):
+                    pares_arestas = set(zip(alt_sub, alt_sub[1:]))
+                    conflito_local = any(
+                        pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
+                        for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
+                    )
+                    if not conflito_local:
+                        trecho_conflitante = False
+                        if j > 0:
+                            alt_sub = alt_sub[1:]
+                        caminho.extend(alt_sub)
+                        break
+            except nx.NetworkXNoPath:
+                pass
+
+    if trecho_conflitante:
+        conflito = True
+        st.session_state["mensagens_rotas"][i]["erro"] = (
+            f"⚠️ Conflito no trecho: {origem_trecho} → {destino_trecho}"
+        )
+        st.session_state["status_rotas"][i] = "parado"
+        break
+# ----------------------------------------------------------------------------------------
 
                 # Verifica conflitos com outras rotas, ignorando nós compartilháveis
                 conflito = False
