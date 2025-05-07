@@ -38,6 +38,8 @@ G.add_edge("V-7", "E-1")
 G.add_edge("V-7", "E-3")
 G.add_edge("V-8", "E-2")
 G.add_edge("V-8", "E-4")
+G.add_edge("MOEGA 1", "SP-1")
+
 
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
