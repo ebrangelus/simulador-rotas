@@ -8,11 +8,19 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 G = nx.DiGraph()
 
 # Definindo os nós (origens, intermediários, destinos)
+vb = [f"V-{i}" for i in range(1, 81)] # declarado 80 valvulas
+el = [f"E-{i}" for i in range(1, 21)] # declarado 20 elevadores
+ct = [f"CT-{i}" for i in range(1, 51)] # declarado 50 cts
+rt = [f"RT-{i}" for i in range(1, 10)] # declarado 10 rts
+tc = [f"TC-{i}" for i in range(1, 10)] # declarado 10 tcs
+vr = [f"VR-{i}" for i in range(1, 10)] # declarado 10 vrs
+val = [f"VAL-{i}" for i in range(1, 10)] # declarado 30 vals
+
 origens = ["MOEGA 1", "MOEGA 2"]
-intermediarios = ["V-1", "V-4", "V-7", "V-8", "CT-1", "CT-2"]
-limpeza = ["Não", "MLP-1", "MLP-2", "MLP-3", "MLP-4"]
-secador = ["Não", "SEC-1", "SEC-2"]
-destinos = ["Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
+intermediarios = vb + el + ct + rt + tc + vr + val
+limpeza = ["Sem Limpeza", "MLP-1", "MLP-2", "MLP-3", "MLP-4"]
+secador = ["Sem Secador", "SEC-1", "SEC-2"]
+destinos = ["SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08", "SIL-01", "SIL-02", "SIL-03", "SIL-04", "SIL-05"]
 
 # Adicionando os nós no grafo
 G.add_nodes_from(origens + intermediarios + limpeza + secador + destinos)
@@ -26,10 +34,10 @@ G.add_edge("V-4", "CT-1")
 G.add_edge("V-4", "CT-2")
 G.add_edge("CT-1", "V-7")
 G.add_edge("CT-2", "V-8")
-G.add_edge("V-7", "Elevador-1")
-G.add_edge("V-7", "Elevador-3")
-G.add_edge("V-8", "Elevador-2")
-G.add_edge("V-8", "Elevador-4")
+G.add_edge("V-7", "E-1")
+G.add_edge("V-7", "E-3")
+G.add_edge("V-8", "E-2")
+G.add_edge("V-8", "E-4")
 
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
