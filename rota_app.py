@@ -161,11 +161,16 @@ for i, rota in enumerate(rotas):
 
                     arestas_outros = {(a, b) for a, b in zip(outro_caminho, outro_caminho[1:]) if a not in nodos_compartilhaveis and b not in nodos_compartilhaveis}
 
-                    if arestas_atuais & arestas_outros:
+                    conflito_arestas = arestas_atuais & arestas_outros
+                    if conflito_arestas:
                         conflito = True
-                        st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
+                        conflito_formatado = ' → '.join([f"{a} → {b}" for a, b in conflito_arestas])
+                        st.session_state["mensagens_rotas"][i]["erro"] = (
+                            f"⚠️ Conflito com {rotas[j]} nas rotas: {conflito_formatado}"
+                        )
                         st.session_state["status_rotas"][i] = "parado"
                         break
+
 
 
                 if not conflito:
