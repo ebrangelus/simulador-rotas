@@ -16,7 +16,7 @@ tc = [f"TC-{i}" for i in range(1, 10)] # declarado 10 tcs
 vr = [f"VR-{i}" for i in range(1, 10)] # declarado 10 vrs
 val = [f"VAL-{i}" for i in range(1, 10)] # declarado 30 vals
 
-origens = ["MOEGA 1", "MOEGA 2"]
+origens = ["MOEGA 1", "MOEGA 2", "SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08"]
 intermediarios = vb + el + ct + rt + tc + vr + val
 limpeza = ["Sem Limpeza", "MLP-1", "MLP-2", "MLP-3", "MLP-4"]
 secador = ["Sem Secador", "SEC-1", "SEC-2"]
