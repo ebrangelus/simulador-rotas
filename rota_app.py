@@ -39,7 +39,32 @@ G.add_edge("V-7", "E-3")
 G.add_edge("V-8", "E-2")
 G.add_edge("V-8", "E-4")
 
+# sem limpeza e sem secagem
+G.add_edge("Sem Limpeza", "Sem Secador")
 
+#caminhos elevador 1
+G.add_edge("E-1", "V-11")
+G.add_edge("V-11", "V-12")
+G.add_edge("V-11", "Sem Limpeza") # CT4 manda para os SP06-10
+G.add_edge("Sem Secador", "CT-04") # CT4 manda para os SP06-10
+G.add_edge("V-12", "V-53")
+G.add_edge("V-12", "Sem Limpeza") # CT3 manda para os SP01-05
+G.add_edge("Sem Secador", "CT-03") # CT3 manda para os SP01-05
+
+# caminho para SP06 - 10
+G.add_edge("CT-04", "SP-06")
+G.add_edge("CT-04", "SP-07")
+G.add_edge("CT-04", "SP-08")
+G.add_edge("CT-04", "SP-09")
+G.add_edge("CT-04", "SP-10")
+
+# caminho para SP01-05
+
+G.add_edge("CT-03", "SP-01")
+G.add_edge("CT-03", "SP-02")
+G.add_edge("CT-03", "SP-03")
+G.add_edge("CT-03", "SP-04")
+G.add_edge("CT-03", "SP-05")
 
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
