@@ -101,56 +101,55 @@ for i, rota in enumerate(rotas):
 
     with col6:
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
-
-with col7:
-    # Executar
-    if st.button("▶️ Executar", key=f"executar_{i}"):
+    with col7:
+            if st.button("▶️ Executar", key=f"executar_{i}"):
     # Monta a rota completa com os nós obrigatórios
-    rota_completa = [origem]
+                    rota_completa = [origem]
 
-    if prelimpeza != "Sem Limpeza":
-        rota_completa.append(prelimpeza)
+            if prelimpeza != "Sem Limpeza":
+                    rota_completa.append(prelimpeza)
 
-    if origemsecador != "Sem Secador":
-        rota_completa.append(origemsecador)
+            if origemsecador != "Sem Secador":
+                    rota_completa.append(origemsecador)
 
-    rota_completa.append(destino)
+                    rota_completa.append(destino)
 
     # Verifica se todos os trechos da rota têm caminho
-    rota_valida = all(nx.has_path(G, rota_completa[i], rota_completa[i+1]) for i in range(len(rota_completa)-1))
+                    rota_valida = all(nx.has_path(G, rota_completa[i], rota_completa[i+1]) for i in range(len(rota_completa)-1))
 
-    if rota_valida:
+            if rota_valida:
         # Constrói caminho real juntando os caminhos entre todos os trechos
-        caminho = []
-        for j in range(len(rota_completa)-1):
-            subcaminho = nx.shortest_path(G, rota_completa[j], rota_completa[j+1])
-            if j > 0:
-                subcaminho = subcaminho[1:]  # evita repetição de nós
-            caminho.extend(subcaminho)
+                    caminho = []
+                    for j in range(len(rota_completa)-1):
+                        subcaminho = nx.shortest_path(G, rota_completa[j], rota_completa[j+1])
+                        if j > 0:
+                        subcaminho = subcaminho[1:]  # evita repetição de nós
+                        caminho.extend(subcaminho)
 
         # Verifica conflitos com outras rotas
-        conflito = False
-        for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    conflito = False
+                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
             if i == j:
                 continue
-            if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
-                conflito = True
-                st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
-                st.session_state["status_rotas"][i] = "parado"
+                if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                    conflito = True
+                    st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
+                    st.session_state["status_rotas"][i] = "parado"
                 break
 
-        if not conflito:
-            st.session_state[f"origem_{i}"] = origem
-            st.session_state[f"destino_{i}"] = destino
-            st.session_state[f"prelimpeza_{i}"] = prelimpeza
-            st.session_state[f"origemsecador_{i}"] = origemsecador
-            st.session_state["status_rotas"][i] = "executando"
-            st.session_state["rotas_ativas"][i] = caminho
-            st.session_state["mensagens_rotas"][i]["erro"] = None
-            st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
-    else:
-        st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
-        st.session_state["status_rotas"][i] = "parado"
+            if not conflito:
+                st.session_state[f"origem_{i}"] = origem
+                st.session_state[f"destino_{i}"] = destino
+                st.session_state[f"prelimpeza_{i}"] = prelimpeza
+                st.session_state[f"origemsecador_{i}"] = origemsecador
+                st.session_state["status_rotas"][i] = "executando"
+                st.session_state["rotas_ativas"][i] = caminho
+                st.session_state["mensagens_rotas"][i]["erro"] = None
+                st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
+            else:
+                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
+                st.session_state["status_rotas"][i] = "parado"
+
 
 
     with col8:
