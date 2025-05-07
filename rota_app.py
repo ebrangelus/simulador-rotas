@@ -127,7 +127,7 @@ for i, rota in enumerate(rotas):
                         caminho.extend(subcaminho)
 
         # Verifica conflitos com outras rotas
-                    conflito = False
+                        conflito = False
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
             if i == j:
                 continue
