@@ -126,116 +126,91 @@ for i, rota in enumerate(rotas):
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
         
     with col7:
-        if st.button("▶️ Executar", key=f"executar_{i}"):
-            # Monta a rota completa com os nós obrigatórios
-            rota_completa = [origem]
+    if st.button("▶️ Executar", key=f"executar_{i}"):
+        # Monta a rota completa com os nós obrigatórios
+        rota_completa = [origem]
 
-            if prelimpeza != "Sem Limpeza":
-                rota_completa.append(prelimpeza)
+        if prelimpeza != "Sem Limpeza":
+            rota_completa.append(prelimpeza)
 
-            if origemsecador != "Sem Secador":
-                rota_completa.append(origemsecador)
-            rota_completa.append(destino)
+        if origemsecador != "Sem Secador":
+            rota_completa.append(origemsecador)
 
-            # Verifica se todos os trechos da rota têm caminho
-            rota_valida = all(nx.has_path(G, rota_completa[i], rota_completa[i+1]) for i in range(len(rota_completa)-1))
-# -----------------------------------------------------------------------------------------------------------------------------
-            if rota_valida:
-# Tenta construir o caminho trecho a trecho, com tentativa de resolver conflito
-caminho = []
-conflito = False
+        rota_completa.append(destino)
 
-for j in range(len(rota_completa) - 1):
-    origem_trecho = rota_completa[j]
-    destino_trecho = rota_completa[j + 1]
+        # Verifica se todos os trechos da rota têm caminho
+        rota_valida = all(nx.has_path(G, rota_completa[i], rota_completa[i+1]) for i in range(len(rota_completa)-1))
 
-    trecho_conflitante = True
+        if rota_valida:
+            # Tenta construir o caminho trecho a trecho, com tentativa de resolver conflito
+            caminho = []
+            conflito = False
 
-    # Primeiro tenta o caminho mais curto
-    try:
-        subcaminhos = [nx.shortest_path(G, origem_trecho, destino_trecho)]
-    except nx.NetworkXNoPath:
-        subcaminhos = []
+            for j in range(len(rota_completa) - 1):
+                origem_trecho = rota_completa[j]
+                destino_trecho = rota_completa[j + 1]
 
-    # Se houve caminho, mas com conflito, tenta todos os caminhos mais curtos
-    if subcaminhos:
-        novos_caminhos = []
-        for sub in subcaminhos:
-            pares_arestas = set(zip(sub, sub[1:]))
-            conflito_local = any(
-                pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
-                for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
-            )
-            if not conflito_local:
-                trecho_conflitante = False
-                if j > 0:
-                    sub = sub[1:]  # evita repetição de nó anterior
-                caminho.extend(sub)
-                break
+                trecho_conflitante = True
 
-        # Se todos conflitaram, tenta todos os caminhos mais curtos possíveis
-        if trecho_conflitante:
-            try:
-                for alt_sub in nx.all_shortest_paths(G, origem_trecho, destino_trecho):
-                    pares_arestas = set(zip(alt_sub, alt_sub[1:]))
-                    conflito_local = any(
-                        pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
-                        for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
-                    )
-                    if not conflito_local:
-                        trecho_conflitante = False
-                        if j > 0:
-                            alt_sub = alt_sub[1:]
-                        caminho.extend(alt_sub)
-                        break
-            except nx.NetworkXNoPath:
-                pass
+                # Primeiro tenta o caminho mais curto
+                try:
+                    subcaminhos = [nx.shortest_path(G, origem_trecho, destino_trecho)]
+                except nx.NetworkXNoPath:
+                    subcaminhos = []
 
-    if trecho_conflitante:
-        conflito = True
-        st.session_state["mensagens_rotas"][i]["erro"] = (
-            f"⚠️ Conflito no trecho: {origem_trecho} → {destino_trecho}"
-        )
-        st.session_state["status_rotas"][i] = "parado"
-        break
-# ----------------------------------------------------------------------------------------
-
-                # Verifica conflitos com outras rotas, ignorando nós compartilháveis
-                conflito = False
-                nodos_compartilhaveis = {"Sem Limpeza", "Sem Secador"}
-
-                arestas_atuais = {(a, b) for a, b in zip(caminho, caminho[1:]) if a not in nodos_compartilhaveis and b not in nodos_compartilhaveis}
-
-                for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                    if i == j:
-                        continue
-
-                    arestas_outros = {(a, b) for a, b in zip(outro_caminho, outro_caminho[1:]) if a not in nodos_compartilhaveis and b not in nodos_compartilhaveis}
-
-                    conflito_arestas = arestas_atuais & arestas_outros
-                    if conflito_arestas:
-                        conflito = True
-                        conflito_formatado = ' → '.join([f"{a} → {b}" for a, b in conflito_arestas])
-                        st.session_state["mensagens_rotas"][i]["erro"] = (
-                            f"⚠️ Conflito com {rotas[j]} nas rotas: {conflito_formatado}"
+                # Se houve caminho, mas com conflito, tenta todos os caminhos mais curtos
+                if subcaminhos:
+                    for sub in subcaminhos:
+                        pares_arestas = set(zip(sub, sub[1:]))
+                        conflito_local = any(
+                            pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
+                            for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
                         )
-                        st.session_state["status_rotas"][i] = "parado"
-                        break
+                        if not conflito_local:
+                            trecho_conflitante = False
+                            if j > 0:
+                                sub = sub[1:]  # evita repetição de nó anterior
+                            caminho.extend(sub)
+                            break
 
+                # Se todos os caminhos mais curtos conflitaram, tenta outros alternativos
+                if trecho_conflitante:
+                    try:
+                        for alt_sub in nx.all_shortest_paths(G, origem_trecho, destino_trecho):
+                            pares_arestas = set(zip(alt_sub, alt_sub[1:]))
+                            conflito_local = any(
+                                pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
+                                for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
+                            )
+                            if not conflito_local:
+                                trecho_conflitante = False
+                                if j > 0:
+                                    alt_sub = alt_sub[1:]
+                                caminho.extend(alt_sub)
+                                break
+                    except nx.NetworkXNoPath:
+                        pass
 
+                if trecho_conflitante:
+                    conflito = True
+                    st.session_state["mensagens_rotas"][i]["erro"] = (
+                        f"⚠️ Conflito no trecho: {origem_trecho} → {destino_trecho}"
+                    )
+                    st.session_state["status_rotas"][i] = "parado"
+                    break
 
-                if not conflito:
-                    st.session_state[f"origem_{i}"] = origem
-                    st.session_state[f"destino_{i}"] = destino
-                    st.session_state[f"prelimpeza_{i}"] = prelimpeza
-                    st.session_state[f"origemsecador_{i}"] = origemsecador
-                    st.session_state["status_rotas"][i] = "executando"
-                    st.session_state["rotas_ativas"][i] = caminho
-                    st.session_state["mensagens_rotas"][i]["erro"] = None
-                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
-            else:
-                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
-                st.session_state["status_rotas"][i] = "parado"
+            if not conflito:
+                st.session_state[f"origem_{i}"] = origem
+                st.session_state[f"destino_{i}"] = destino
+                st.session_state[f"prelimpeza_{i}"] = prelimpeza
+                st.session_state[f"origemsecador_{i}"] = origemsecador
+                st.session_state["status_rotas"][i] = "executando"
+                st.session_state["rotas_ativas"][i] = caminho
+                st.session_state["mensagens_rotas"][i]["erro"] = None
+                st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
+        else:
+            st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
+            st.session_state["status_rotas"][i] = "parado"
 
 
 
