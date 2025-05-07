@@ -40,7 +40,7 @@ G.add_edge("V-8", "E-2")
 G.add_edge("V-8", "E-4")
 G.add_edge("MOEGA 1", "Sem Limpeza")
 G.add_edge("MOEGA 1", "Sem Secador")
-G.add_edge("Sem Secador", "SP-1")
+G.add_edge("Sem Secador", "SP-01")
 
 
 # Rotas
