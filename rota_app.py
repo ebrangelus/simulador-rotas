@@ -122,7 +122,7 @@ for i, rota in enumerate(rotas):
                     caminho = []
                     for j in range(len(rota_completa)-1):
                         subcaminho = nx.shortest_path(G, rota_completa[j], rota_completa[j+1])
-                        if j > 0:
+            if j > 0:
                         subcaminho = subcaminho[1:]  # evita repetição de nós
                         caminho.extend(subcaminho)
 
