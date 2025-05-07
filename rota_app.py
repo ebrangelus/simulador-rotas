@@ -129,13 +129,13 @@ for i, rota in enumerate(rotas):
         # Verifica conflitos com outras rotas
                         conflito = False
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
-            if i == j:
-                continue
-                if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                        if i == j:
+                        continue
+            if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
                     conflito = True
                     st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
                     st.session_state["status_rotas"][i] = "parado"
-                break
+                        break
 
             if not conflito:
                 st.session_state[f"origem_{i}"] = origem
