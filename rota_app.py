@@ -266,52 +266,51 @@ for i, rota in enumerate(rotas):
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
         
     with col7:
-        # Executar
         if st.button("▶️ Executar", key=f"executar_{i}"):
-            if nx.has_path(G, origem, destino):
-                conflito = False
+            caminhos_alternativos = []
 
-            # Primeiro tenta o menor caminho
+            if nx.has_path(G, origem, destino):
+                # Caminho mais curto inicialmente
+                caminhos_alternativos.append(nx.shortest_path(G, origem, destino))
+
+                # Alternativas com all_simple_paths
                 try:
-                    caminho = nx.shortest_path(G, origem, destino)
+                    for alt in nx.all_simple_paths(G, origem, destino, cutoff=10):
+                        if alt not in caminhos_alternativos:
+                            caminhos_alternativos.append(alt)
+                except nx.NetworkXNoPath:
+                    pass
+
+                st.write("Caminhos possíveis:", caminhos_alternativos)
+
+                caminho_escolhido = None
+                for caminho in caminhos_alternativos:
                     pares_arestas = set(zip(caminho, caminho[1:]))
+                    conflito_local = False
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                             continue
-                        if pares_arestas & set(zip(outro_caminho, outro_caminho[1:])):
-                            conflito = True
+                        pares_outro = set(zip(outro_caminho, outro_caminho[1:]))
+                        conflito_comum = pares_arestas & pares_outro
+                        if conflito_comum:
+                            conflito_local = True
+                            st.write(f"⚠️ Conflito detectado com rota {j}: {conflito_comum}")
                             break
-                except nx.NetworkXNoPath:
-                    caminho = []
-                    conflito = True
+                    if not conflito_local:
+                        caminho_escolhido = caminho
+                        break
 
-                # Se houve conflito no shortest_path, tenta alternativas
-                if conflito:
-                    caminho = None
-                    for alt_caminho in nx.all_simple_paths(G, origem, destino, cutoff=10):
-                        pares_arestas = set(zip(alt_caminho, alt_caminho[1:]))
-                        conflito_local = any(
-                            pares_arestas & set(zip(outro, outro[1:]))
-                            for j, outro in st.session_state["rotas_ativas"].items() if j != i
-                        )
-                        if not conflito_local:
-                            caminho = alt_caminho
-                            conflito = False
-                            break
-
-                if not conflito and caminho:
+                if caminho_escolhido:
                     st.session_state[f"origem_{i}"] = origem
                     st.session_state[f"destino_{i}"] = destino
                     st.session_state[f"prelimpeza_{i}"] = prelimpeza
                     st.session_state[f"origemsecador_{i}"] = origemsecador
                     st.session_state["status_rotas"][i] = "executando"
-                    st.session_state["rotas_ativas"][i] = caminho
-                    # limpa erro antigo
+                    st.session_state["rotas_ativas"][i] = caminho_escolhido
                     st.session_state["mensagens_rotas"][i]["erro"] = None
-                    # define nova mensagem de sucesso
-                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
+                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_escolhido)}"
                 else:
-                    st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com outra rota ou caminho indisponível"
+                    st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Todas as rotas de {origem} a {destino} estão em conflito!"
                     st.session_state["status_rotas"][i] = "parado"
             else:
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
