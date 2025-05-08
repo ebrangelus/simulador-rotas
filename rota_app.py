@@ -274,12 +274,12 @@ for i, rota in enumerate(rotas):
                 caminhos_alternativos.append(nx.shortest_path(G, origem, destino))
 
                 # Alternativas com all_simple_paths
+# Coleta todos os caminhos possíveis primeiro, inclusive o mais curto
                 try:
-                    for alt in nx.all_simple_paths(G, origem, destino, cutoff=10):
-                        if alt not in caminhos_alternativos:
-                            caminhos_alternativos.append(alt)
+                    caminhos_alternativos = list(nx.all_simple_paths(G, origem, destino, cutoff=10))
                 except nx.NetworkXNoPath:
-                    pass
+                    caminhos_alternativos = []
+
 
                 st.write("Caminhos possíveis:", caminhos_alternativos)
 
