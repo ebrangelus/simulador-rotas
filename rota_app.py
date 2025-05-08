@@ -249,9 +249,9 @@ for i, rota in enumerate(rotas):
         # Verificação do caminho válido no grafo
             rota_valida = all(nx.has_path(G, rota_completa[j], rota_completa[j + 1]) for j in range(len(rota_completa) - 1))
 
-        if rota_valida:
-            caminho = []
-            conflito = False
+            if rota_valida:
+                caminho = []
+                conflito = False
 
             for j in range(len(rota_completa) - 1):
                 origem_trecho = rota_completa[j]
