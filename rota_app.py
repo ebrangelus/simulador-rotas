@@ -239,7 +239,7 @@ for i, rota in enumerate(rotas):
         if st.button("▶️ Executar", key=f"executar_{i}"):
 
         # Lógica de construção do caminho completo
-        rota_completa = [origem]
+            rota_completa = [origem]
         if prelimpeza != "Sem Limpeza":
             rota_completa.append(prelimpeza)
         if origemsecador != "Sem Secador":
