@@ -65,20 +65,26 @@ G.add_edge("E-1", "V-11")
 G.add_edge("E-2", "V-13")
 
 # V-13
-G.add_edge("V-13", "CT-3") # SAIDA 1 - SP1-SP5
+G.add_edge("V-13", "Sem Limpeza") # SAIDA 1 - SP1-SP5
+G.add_edge("Sem Secador", "CT-3")
 G.add_edge("V-13", "V-14") # SAIDA 2 
 
 # V-14
-G.add_edge("V-14", "CT-4") # SAIDA 1 - SP6-SP10
+G.add_edge("V-14", "Sem Limpeza") # SAIDA 1 - SP6-SP10
+G.add_edge("Sem Secador", "CT-4") # SAIDA 1 - SP6-SP10
 G.add_edge("V-14", "CT-8") # 
 
 # V-11 
 G.add_edge("V-11", "V-12") # SAIDA 1
-G.add_edge("V-11", "CT-4") # CT4 manda para os SP06-10
+G.add_edge("V-11", "Sem Limpeza") # CT4 manda para os SP06-10
+G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
+G.add_edge("Sem Secador", "CT-04") # CT4 manda para os SP06-10
 
 # V-12 
 G.add_edge("V-12", "V-53") # SAIDA 2
-G.add_edge("V-12", "CT-3") # CT3 manda para os SP01-05
+G.add_edge("V-12", "Sem Limpeza") # CT3 manda para os SP01-05
+G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
+G.add_edge("Sem Secador", "CT-03") # CT3 manda para os SP01-05
 
 # V-53
 G.add_edge("V-53", "CT-7") # SAIDA 1
@@ -169,6 +175,11 @@ G.add_edge("V-34", "V-48") # SAIDA 2
 G.add_edge("CT-14", "CT-16") # SAIDA 1 - MANDA PARA SA1-4
 G.add_edge("CT-14", "CT-17") # SAIDA 2 - MANDA PARA SA4-8
 
+G.add_edge("CT-14", "Sem Limpeza") 
+G.add_edge("Sem Limpeza", "Sem Secador") 
+G.add_edge("Sem Secador", "CT-16") # SA1-4 SEM LIMPEZA E SECADOR
+G.add_edge("Sem Secador", "CT-17") # SA5-8 SEM LIMPEZA E SECADOR
+
 # CT-16 - SA1 AO 4
 G.add_edge("CT-16", "SA-01")
 G.add_edge("CT-16", "SA-02")
@@ -196,7 +207,6 @@ G.add_edge("CT-3", "SP-02")
 G.add_edge("CT-3", "SP-03")
 G.add_edge("CT-3", "SP-04")
 G.add_edge("CT-3", "SP-05")
-
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
 
@@ -265,20 +275,18 @@ for i, rota in enumerate(rotas):
 
                 for caminho in caminhos_possiveis:
                     conflito = False
+                def caminho_sem_nos_especificos(caminho, ignorar_nos={"Sem Limpeza", "Sem Secador"}):
+                    return [no for no in caminho if no not in ignorar_nos]
 
-                    def caminho_sem_nos_especificos(caminho, ignorar_nos={"Sem Limpeza", "Sem Secador"}):
-                        return [no for no in caminho if no not in ignorar_nos]
-
-                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                        if i == j:
-                            continue
-                        # Remove os nós ignorados
-                        caminho_filtrado = caminho_sem_nos_especificos(caminho)
-                        outro_filtrado = caminho_sem_nos_especificos(outro_caminho)
-
-                        if set(zip(caminho_filtrado, caminho_filtrado[1:])) & set(zip(outro_filtrado, outro_filtrado[1:])):
-                            conflito = True
-                            break
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                    # Remove os nós ignorados
+                    caminho_filtrado = caminho_sem_nos_especificos(caminho)
+                    outro_filtrado = caminho_sem_nos_especificos(outro_caminho)
+                    if set(zip(caminho_filtrado, caminho_filtrado[1:])) & set(zip(outro_filtrado, outro_filtrado[1:])):
+                        conflito = True
+                        break
 
                     if not conflito:
                         caminho_final = caminho
