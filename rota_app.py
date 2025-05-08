@@ -143,6 +143,7 @@ G.add_edge("CT-14", "CT-16") # SAIDA 1 - MANDA PARA SA1-4
 G.add_edge("CT-14", "CT-17") # SAIDA 2 - MANDA PARA SA4-8
 
 G.add_edge("CT-14", "Sem Limpeza") 
+G.add_edge("Sem Limpeza", "Sem Secador") 
 G.add_edge("Sem Secador", "CT-16") # SA1-4 SEM LIMPEZA E SECADOR
 G.add_edge("Sem Secador", "CT-17") # SA5-8 SEM LIMPEZA E SECADOR
 
