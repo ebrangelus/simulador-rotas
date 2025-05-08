@@ -133,9 +133,8 @@ for i, rota in enumerate(rotas):
     with col6:
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
         
-    with col7:
+       with col7:
         if st.button("▶️ Executar", key=f"executar_{i}"):
-            # Monta a rota completa com os nós obrigatórios
             rota_completa = [origem]
 
             if prelimpeza != "Sem Limpeza":
@@ -146,45 +145,45 @@ for i, rota in enumerate(rotas):
 
             rota_completa.append(destino)
 
-            # Verifica se todos os trechos da rota têm caminho
-            rota_valida = all(nx.has_path(G, rota_completa[i], rota_completa[i+1]) for i in range(len(rota_completa)-1))
+            rota_valida = all(nx.has_path(G, rota_completa[j], rota_completa[j + 1]) for j in range(len(rota_completa) - 1))
 
             if rota_valida:
-                # Tenta construir o caminho trecho a trecho, com tentativa de resolver conflito
                 caminho = []
                 conflito = False
 
                 for j in range(len(rota_completa) - 1):
                     origem_trecho = rota_completa[j]
                     destino_trecho = rota_completa[j + 1]
+
                     trecho_conflitante = True
+                    subcaminhos = []
 
-                    # Primeiro tenta o caminho com A*
                     try:
-                        subcaminho = nx.astar_path(G, origem_trecho, destino_trecho, heuristic=heuristica_no_simples)
-                        pares_arestas = set(zip(subcaminho, subcaminho[1:]))
-
-                        conflito_local = any(
-                            pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
-                            for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
-                        )
-
-                        if not conflito_local:
-                            trecho_conflitante = False
-                            if j > 0:
-                                subcaminho = subcaminho[1:]
-                            caminho.extend(subcaminho)
+                        subcaminhos.append(nx.shortest_path(G, origem_trecho, destino_trecho))
                     except nx.NetworkXNoPath:
                         pass
 
-                    # Se não conseguiu resolver com A*, tenta caminhos alternativos
+                    if subcaminhos:
+                        for sub in subcaminhos:
+                            pares_arestas = set(zip(sub, sub[1:]))
+                            conflito_local = any(
+                                pares_arestas & set(zip(outro, outro[1:]))
+                                for k, outro in st.session_state["rotas_ativas"].items() if k != i
+                            )
+                            if not conflito_local:
+                                trecho_conflitante = False
+                                if j > 0:
+                                    sub = sub[1:]
+                                caminho.extend(sub)
+                                break
+
                     if trecho_conflitante:
                         try:
-                            for alt_sub in nx.all_shortest_paths(G, origem_trecho, destino_trecho):
+                            for alt_sub in nx.all_simple_paths(G, origem_trecho, destino_trecho, cutoff=10):
                                 pares_arestas = set(zip(alt_sub, alt_sub[1:]))
                                 conflito_local = any(
-                                    pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
-                                    for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
+                                    pares_arestas & set(zip(outro, outro[1:]))
+                                    for k, outro in st.session_state["rotas_ativas"].items() if k != i
                                 )
                                 if not conflito_local:
                                     trecho_conflitante = False
@@ -197,9 +196,7 @@ for i, rota in enumerate(rotas):
 
                     if trecho_conflitante:
                         conflito = True
-                        st.session_state["mensagens_rotas"][i]["erro"] = (
-                            f"⚠️ Conflito no trecho: {origem_trecho} → {destino_trecho}"
-                        )
+                        st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito no trecho: {origem_trecho} → {destino_trecho}"
                         st.session_state["status_rotas"][i] = "parado"
                         break
 
