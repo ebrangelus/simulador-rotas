@@ -254,19 +254,19 @@ for i, rota in enumerate(rotas):
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                             continue
+
                         arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
                         conflito_arestas = arestas_caminho & arestas_outro_caminho
                         conflito_nos = nos_caminho & set(outro_caminho)
 
-                    if conflito_arestas or conflito_nos:
-                        conflito = True
-                        conflitos_detectados.append((caminho, outro_caminho, conflito_arestas | conflito_nos))
-                        break
-
+                        if conflito_arestas or conflito_nos:
+                            conflito = True
+                            conflitos_detectados.append((caminho, outro_caminho, conflito_arestas | conflito_nos))
+                            break  # já encontrou um conflito, passa pro próximo caminho possível
 
                     if not conflito:
                         caminho_final = caminho
-                        break
+                        break  # encontrou um caminho viável, para a busca
 
                 if caminho_final:
                     st.session_state[f"origem_{i}"] = origem
@@ -283,6 +283,7 @@ for i, rota in enumerate(rotas):
             else:
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
+
 
     with col8:
         if st.button("⏸️ Pausar", key=f"pausar_{i}"):
