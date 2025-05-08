@@ -301,17 +301,20 @@ for i, rota in enumerate(rotas):
                     if trecho_conflitante:
                         # Se mesmo as alternativas falharem, tenta a heurística
                         try:
-                            for sub in nx.heuristic_path(G, origem_trecho, destino_trecho, heuristic=heuristica_no_simples):
-                                pares_arestas = set(zip(sub, sub[1:]))
-                                conflito_local = any(
-                                    pares_arestas & set(zip(outro, outro[1:]))
-                                    for k, outro in st.session_state["rotas_ativas"].items() if k != i
-                                )
-                                if not conflito_local:
-                                    caminho.extend(sub)
-                                    break
+                            sub = nx.astar_path(G, origem_trecho, destino_trecho, heuristic=heuristica_no_simples)
+                            pares_arestas = set(zip(sub, sub[1:]))
+                            conflito_local = any(
+                                pares_arestas & set(zip(outro, outro[1:]))
+                                for k, outro in st.session_state["rotas_ativas"].items() if k != i
+                            )
+                            if not conflito_local:
+                                if j > 0:
+                                    sub = sub[1:]
+                                caminho.extend(sub)
+                                trecho_conflitante = False
                         except nx.NetworkXNoPath:
                             pass
+
 
                     if trecho_conflitante:
                         conflito = True
