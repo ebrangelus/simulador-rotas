@@ -30,7 +30,7 @@ secador = ["Sem Secador", "SEC-1", "SEC-2"]
 destinos = ["SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08", "SIL-01", "SIL-02", "SIL-03", "SIL-04", "SIL-05"]
 
 # Adicionando os nós no grafo
-G.add_nodes_from(origens + intermediarios + limpeza + secador + destinos)
+G.add_nodes_from(origens + intermediarios + destinos)
 
 # Adicionando as arestas
 G.add_edge("MOEGA 1", "V-1")
