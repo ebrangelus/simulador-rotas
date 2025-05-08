@@ -247,16 +247,22 @@ for i, rota in enumerate(rotas):
 
                 for caminho in caminhos_possiveis:
                     arestas_caminho = set(zip(caminho, caminho[1:]))
+                    nos_caminho = set(caminho)
+
                     conflito = False
 
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                             continue
                         arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
-                        if arestas_caminho & arestas_outro_caminho:
-                            conflito = True
-                            conflitos_detectados.append((caminho, outro_caminho, arestas_caminho & arestas_outro_caminho))
-                            break
+                        conflito_arestas = arestas_caminho & arestas_outro_caminho
+                        conflito_nos = nos_caminho & set(outro_caminho)
+
+                    if conflito_arestas or conflito_nos:
+                        conflito = True
+                        conflitos_detectados.append((caminho, outro_caminho, conflito_arestas | conflito_nos))
+                        break
+
 
                     if not conflito:
                         caminho_final = caminho
