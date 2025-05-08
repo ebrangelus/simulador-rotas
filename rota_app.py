@@ -65,12 +65,16 @@ G.add_edge("E-1", "V-11")
 G.add_edge("E-2", "V-13")
 
 # V-13
-G.add_edge("V-13", "CT-3") # SAIDA 1 - SP1-SP5
+G.add_edge("V-13", "Sem Limpeza") # SAIDA 1 - SP1-SP5
+G.add_edge("Sem Secador", "CT-03")
 G.add_edge("V-13", "V-14") # SAIDA 2 
 
+
+
 # V-14
-G.add_edge("V-14", "CT-4") # SAIDA 1 - SP6-SP10
-G.add_edge("V-14", "CT-8") # SAIDA 1 - SP6-SP10
+G.add_edge("V-14", "Sem Limpeza) # SAIDA 1 - SP6-SP10
+G.add_edge("Sem Secador", "CT-4") # SAIDA 1 - SP6-SP10
+G.add_edge("V-14", "CT-8") # 
 
 # V-11 
 G.add_edge("V-11", "V-12") # SAIDA 1
@@ -100,7 +104,7 @@ G.add_edge("V-19", "MLP-1") # SAIDA 1
 G.add_edge("V-19", "V-20") # SAIDA 2
 
 # V-20
-G.add_edge("V-20", "CT-09") # SAIDA 1
+G.add_edge("V-20", "CT-9") # SAIDA 1
 G.add_edge("V-20", "V-21") # SAIDA 2
 
 # V-21
@@ -192,20 +196,19 @@ G.add_edge("CT-16", "SA-08")
 
 
 
-# caminho para SP06 - 10
-G.add_edge("CT-04", "SP-06")
-G.add_edge("CT-04", "SP-07")
-G.add_edge("CT-04", "SP-08")
-G.add_edge("CT-04", "SP-09")
-G.add_edge("CT-04", "SP-10")
+# CT-04 - caminho para SP06 - 10
+G.add_edge("CT-4", "SP-06")
+G.add_edge("CT-4", "SP-07")
+G.add_edge("CT-4", "SP-08")
+G.add_edge("CT-4", "SP-09")
+G.add_edge("CT-4", "SP-10")
 
-# caminho para SP01-05
-
-G.add_edge("CT-03", "SP-01")
-G.add_edge("CT-03", "SP-02")
-G.add_edge("CT-03", "SP-03")
-G.add_edge("CT-03", "SP-04")
-G.add_edge("CT-03", "SP-05")
+# CT-03 - caminho para SP01-05
+G.add_edge("CT-3", "SP-01")
+G.add_edge("CT-3", "SP-02")
+G.add_edge("CT-3", "SP-03")
+G.add_edge("CT-3", "SP-04")
+G.add_edge("CT-3", "SP-05")
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
 
