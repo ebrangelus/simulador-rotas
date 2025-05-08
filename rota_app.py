@@ -72,7 +72,7 @@ G.add_edge("V-13", "V-14") # SAIDA 2
 
 
 # V-14
-G.add_edge("V-14", "Sem Limpeza) # SAIDA 1 - SP6-SP10
+G.add_edge("V-14", "Sem Limpeza") # SAIDA 1 - SP6-SP10
 G.add_edge("Sem Secador", "CT-4") # SAIDA 1 - SP6-SP10
 G.add_edge("V-14", "CT-8") # 
 
