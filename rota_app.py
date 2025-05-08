@@ -239,19 +239,19 @@ for i, rota in enumerate(rotas):
         if st.button("▶️ Executar", key=f"executar_{i}"):
 
         # Lógica de construção do caminho completo
-            rota_completa = [origem]
+        rota_completa = [origem]
         if prelimpeza != "Sem Limpeza":
             rota_completa.append(prelimpeza)
         if origemsecador != "Sem Secador":
             rota_completa.append(origemsecador)
-            rota_completa.append(destino)
+        rota_completa.append(destino)
 
-        # Verificação do caminho válido no grafo
-            rota_valida = all(nx.has_path(G, rota_completa[j], rota_completa[j + 1]) for j in range(len(rota_completa) - 1))
+        # Verificação do caminho válido no grafo, só após pressionar o botão
+        rota_valida = all(nx.has_path(G, rota_completa[j], rota_completa[j + 1]) for j in range(len(rota_completa) - 1))
 
-            if rota_valida:
-                caminho = []
-                conflito = False
+        if rota_valida:
+            caminho = []
+            conflito = False
 
             for j in range(len(rota_completa) - 1):
                 origem_trecho = rota_completa[j]
@@ -343,6 +343,7 @@ for i, rota in enumerate(rotas):
                 st.session_state["mensagens_rotas"][i] = {}
             st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
             st.session_state["status_rotas"][i] = "parado"
+
 
     # Exibição de status e mensagens
     with col8:
