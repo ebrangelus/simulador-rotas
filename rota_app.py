@@ -270,21 +270,34 @@ for i, rota in enumerate(rotas):
         # Executar
         if st.button("▶️ Executar", key=f"executar_{i}"):
             if nx.has_path(G, origem, destino):
+                # Recupera todos os caminhos possíveis
                 caminhos_possiveis = list(nx.shortest_simple_paths(G, origem, destino))
                 caminho_final = None
 
                 for caminho in caminhos_possiveis:
+                    # Converte o caminho em um conjunto de arestas para verificação de conflitos
+                    arestas_caminho = set(zip(caminho, caminho[1:]))
                     conflito = False
+
+                    # Verifica conflito com as rotas ativas
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                             continue
-                        if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                    
+                    # Converte o outro caminho em um conjunto de arestas
+                        arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
+
+                    # Se houver interseção entre as arestas do caminho atual e do outro caminho, é um conflito
+                        if arestas_caminho & arestas_outro_caminho:
                             conflito = True
                             break
+
+                # Se não houver conflito, seleciona o caminho atual como o final
                     if not conflito:
                         caminho_final = caminho
                         break
 
+            # Se um caminho final for encontrado, salva e executa
                 if caminho_final:
                     st.session_state[f"origem_{i}"] = origem
                     st.session_state[f"destino_{i}"] = destino
