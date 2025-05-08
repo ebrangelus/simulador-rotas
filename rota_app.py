@@ -266,56 +266,40 @@ for i, rota in enumerate(rotas):
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
         
     with col7:
+        # Executar
         if st.button("▶️ Executar", key=f"executar_{i}"):
-            caminhos_alternativos = []
-
             if nx.has_path(G, origem, destino):
-                # Caminho mais curto inicialmente
-                caminhos_alternativos.append(nx.shortest_path(G, origem, destino))
+                caminhos_possiveis = list(nx.shortest_simple_paths(G, origem, destino))
+                caminho_final = None
 
-                # Alternativas com all_simple_paths
-# Coleta todos os caminhos possíveis primeiro, inclusive o mais curto
-                try:
-                    caminhos_alternativos = list(nx.all_simple_paths(G, origem, destino, cutoff=10))
-                except nx.NetworkXNoPath:
-                    caminhos_alternativos = []
-
-
-                st.write("Caminhos possíveis:", caminhos_alternativos)
-
-                caminho_escolhido = None
-                for caminho in caminhos_alternativos:
-                    pares_arestas = set(zip(caminho, caminho[1:]))
-                    conflito_local = False
+                for caminho in caminhos_possiveis:
+                    conflito = False
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                             continue
-                        pares_outro = set(zip(outro_caminho, outro_caminho[1:]))
-                        conflito_comum = pares_arestas & pares_outro
-                        if conflito_comum:
-                            conflito_local = True
-                            st.write(f"⚠️ Conflito detectado com rota {j}: {conflito_comum}")
+                        if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                            conflito = True
                             break
-                    if not conflito_local:
-                        caminho_escolhido = caminho
+                    if not conflito:
+                        caminho_final = caminho
                         break
 
-                if caminho_escolhido:
+                if caminho_final:
                     st.session_state[f"origem_{i}"] = origem
                     st.session_state[f"destino_{i}"] = destino
                     st.session_state[f"prelimpeza_{i}"] = prelimpeza
                     st.session_state[f"origemsecador_{i}"] = origemsecador
                     st.session_state["status_rotas"][i] = "executando"
-                    st.session_state["rotas_ativas"][i] = caminho_escolhido
+                    st.session_state["rotas_ativas"][i] = caminho_final
                     st.session_state["mensagens_rotas"][i]["erro"] = None
-                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_escolhido)}"
+                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_final)}"
                 else:
-                    st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Todas as rotas de {origem} a {destino} estão em conflito!"
+                    st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Conflito em todos os caminhos possíveis"
                     st.session_state["status_rotas"][i] = "parado"
+
             else:
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
-
 
 
     # Exibição de status e mensagens
