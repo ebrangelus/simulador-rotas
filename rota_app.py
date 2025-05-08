@@ -273,6 +273,7 @@ for i, rota in enumerate(rotas):
                 # Recupera todos os caminhos possíveis
                 caminhos_possiveis = list(nx.shortest_simple_paths(G, origem, destino))
                 caminho_final = None
+                conflitos_detectados = []  # Lista para armazenar os conflitos encontrados
 
                 for caminho in caminhos_possiveis:
                     # Converte o caminho em um conjunto de arestas para verificação de conflitos
@@ -283,21 +284,23 @@ for i, rota in enumerate(rotas):
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                             continue
-                    
-                    # Converte o outro caminho em um conjunto de arestas
+
+                        # Converte o outro caminho em um conjunto de arestas
                         arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
 
-                    # Se houver interseção entre as arestas do caminho atual e do outro caminho, é um conflito
+                        # Se houver interseção entre as arestas do caminho atual e do outro caminho, é um conflito
                         if arestas_caminho & arestas_outro_caminho:
                             conflito = True
+                            # Adiciona o conflito com a descrição das arestas em conflito
+                            conflitos_detectados.append((caminho, outro_caminho, arestas_caminho & arestas_outro_caminho))
                             break
 
-                # Se não houver conflito, seleciona o caminho atual como o final
+                    # Se não houver conflito, seleciona o caminho atual como o final
                     if not conflito:
                         caminho_final = caminho
                         break
 
-            # Se um caminho final for encontrado, salva e executa
+                # Se um caminho final for encontrado, salva e executa
                 if caminho_final:
                     st.session_state[f"origem_{i}"] = origem
                     st.session_state[f"destino_{i}"] = destino
@@ -315,32 +318,40 @@ for i, rota in enumerate(rotas):
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
 
+        # Exibição de status e mensagens
+        with col8:
+            if st.button("⏸️ Pausar", key=f"pausar_{i}"):
+                st.session_state["status_rotas"][i] = "pausado"
 
-    # Exibição de status e mensagens
-    with col8:
-        if st.button("⏸️ Pausar", key=f"pausar_{i}"):
-            st.session_state["status_rotas"][i] = "pausado"
+        with col9:
+            if st.button("⏹️ Parar", key=f"parar_{i}"):
+                st.session_state["status_rotas"][i] = "parado"
+                st.session_state["rotas_ativas"].pop(i, None)
+                st.session_state["mensagens_rotas"][i]["erro"] = None
+                st.session_state["mensagens_rotas"][i]["sucesso"] = None
 
-    with col9:
-        if st.button("⏹️ Parar", key=f"parar_{i}"):
-            st.session_state["status_rotas"][i] = "parado"
-            st.session_state["rotas_ativas"].pop(i, None)
-            st.session_state["mensagens_rotas"][i]["erro"] = None
-            st.session_state["mensagens_rotas"][i]["sucesso"] = None
+        with col10:
+            status = st.session_state["status_rotas"][i]
+            if status == "executando":
+                st.markdown("🟢")
+            elif status == "pausado":
+                st.markdown("🟡")
+            else:
+                st.markdown("🔴")
 
-    with col10:
-        status = st.session_state["status_rotas"][i]
-        if status == "executando":
-            st.markdown("🟢")
-        elif status == "pausado":
-            st.markdown("🟡")
-        else:
-            st.markdown("🔴")
-
-    with col11:
-        mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
-        mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
-        if mensagem_erro:
-            st.error(mensagem_erro)
-        elif mensagem_sucesso:
-            st.success(mensagem_sucesso)
+        with col11:
+            mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
+            mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
+        
+            # Exibindo os conflitos, se houver
+            if conflitos_detectados:
+                for conflito in conflitos_detectados:
+                    caminho_1, caminho_2, arestas_conflito = conflito
+                    st.write(f"Conflito entre os caminhos: {' → '.join(caminho_1)} e {' → '.join(caminho_2)}")
+                    st.write(f"Arestas em conflito: {arestras_conflito}")
+        
+            # Exibindo as mensagens de erro ou sucesso
+            if mensagem_erro:
+                st.error(mensagem_erro)
+            elif mensagem_sucesso:
+                st.success(mensagem_sucesso)
