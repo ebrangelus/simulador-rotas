@@ -78,13 +78,13 @@ G.add_edge("V-14", "CT-8") #
 G.add_edge("V-11", "V-12") # SAIDA 1
 G.add_edge("V-11", "Sem Limpeza") # CT4 manda para os SP06-10
 G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
-G.add_edge("Sem Secador", "CT-04") # CT4 manda para os SP06-10
+G.add_edge("Sem Secador", "CT-4") # CT4 manda para os SP06-10
 
 # V-12 
 G.add_edge("V-12", "V-53") # SAIDA 2
 G.add_edge("V-12", "Sem Limpeza") # CT3 manda para os SP01-05
 G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
-G.add_edge("Sem Secador", "CT-03") # CT3 manda para os SP01-05
+G.add_edge("Sem Secador", "CT-3") # CT3 manda para os SP01-05
 
 # V-53
 G.add_edge("V-53", "CT-7") # SAIDA 1
