@@ -1,6 +1,14 @@
+
 import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
+import re # função euristica
+
+def heuristica_no_simples(u, v):
+    def extrair_numero(no):
+        match = re.search(r'\d+', no)
+        return int(match.group()) if match else 0
+    return abs(extrair_numero(u) - extrair_numero(v))
 
 st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 
@@ -8,20 +16,13 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 G = nx.DiGraph()
 
 # Definindo os nós (origens, intermediários, destinos)
-origens = ["MOEGA 1", "MOEGA 2"]
-intermediarios = ["V-1", "V-4", "V-7", "V-8", "CT-1", "CT-2"]
-limpeza = ["Não", "MLP-1", "MLP-2", "MLP-3", "MLP-4"]
-secador = ["Não", "SEC-1", "SEC-2"]
-destinos = ["Elevador-1", "Elevador-2", "Elevador-3", "Elevador-4"]
-
-# Adicionando os nós no grafo
-vb = [f"V-{i}" for i in range(1, 81)]
-el = [f"E-{i}" for i in range(1, 21)]
-ct = [f"CT-{i}" for i in range(1, 51)]
-rt = [f"RT-{i}" for i in range(1, 10)]
-tc = [f"TC-{i}" for i in range(1, 10)]
-vr = [f"VR-{i}" for i in range(1, 10)]
-val = [f"VAL-{i}" for i in range(1, 10)]
+vb = [f"V-{i}" for i in range(1, 81)] # declarado 80 valvulas
+el = [f"E-{i}" for i in range(1, 21)] # declarado 20 elevadores
+ct = [f"CT-{i}" for i in range(1, 51)] # declarado 50 cts
+rt = [f"RT-{i}" for i in range(1, 10)] # declarado 10 rts
+tc = [f"TC-{i}" for i in range(1, 10)] # declarado 10 tcs
+vr = [f"VR-{i}" for i in range(1, 10)] # declarado 10 vrs
+val = [f"VAL-{i}" for i in range(1, 10)] # declarado 30 vals
 
 origens = ["MOEGA 1", "MOEGA 2", "SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08"]
 intermediarios = vb + el + ct + rt + tc + vr + val
@@ -29,8 +30,10 @@ limpeza = ["Sem Limpeza", "MLP-1", "MLP-2", "MLP-3", "MLP-4"]
 secador = ["Sem Secador", "SEC-1", "SEC-2"]
 destinos = ["SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08", "SIL-01", "SIL-02", "SIL-03", "SIL-04", "SIL-05"]
 
+# Adicionando os nós no grafo
 G.add_nodes_from(origens + intermediarios + limpeza + secador + destinos)
 
+# Adicionando as arestas
 G.add_edge("MOEGA 1", "V-1")
 G.add_edge("MOEGA 2", "V-4")
 G.add_edge("V-1", "CT-1")
@@ -43,19 +46,28 @@ G.add_edge("V-7", "E-1")
 G.add_edge("V-7", "E-3")
 G.add_edge("V-8", "E-2")
 G.add_edge("V-8", "E-4")
+
+#caminhos elevador 1
 G.add_edge("E-1", "V-11")
 G.add_edge("V-11", "V-12")
-G.add_edge("V-11", "Sem Limpeza")
-G.add_edge("Sem Limpeza", "Sem Secador")
-G.add_edge("Sem Secador", "CT-04")
+G.add_edge("V-11", "Sem Limpeza") # CT4 manda para os SP06-10
+G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
+G.add_edge("Sem Secador", "CT-04") # CT4 manda para os SP06-10
+
 G.add_edge("V-12", "V-53")
-G.add_edge("V-12", "Sem Limpeza")
-G.add_edge("Sem Secador", "CT-03")
+G.add_edge("V-12", "Sem Limpeza") # CT3 manda para os SP01-05
+G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
+G.add_edge("Sem Secador", "CT-03") # CT3 manda para os SP01-05
+
+# caminho para SP06 - 10
 G.add_edge("CT-04", "SP-06")
 G.add_edge("CT-04", "SP-07")
 G.add_edge("CT-04", "SP-08")
 G.add_edge("CT-04", "SP-09")
 G.add_edge("CT-04", "SP-10")
+
+# caminho para SP01-05
+
 G.add_edge("CT-03", "SP-01")
 G.add_edge("CT-03", "SP-02")
 G.add_edge("CT-03", "SP-03")
@@ -120,21 +132,77 @@ for i, rota in enumerate(rotas):
 
     with col6:
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
-
+        
     with col7:
-        # Executar
         if st.button("▶️ Executar", key=f"executar_{i}"):
-            if nx.has_path(G, origem, destino):
-                caminho = nx.shortest_path(G, origem, destino)
+            # Monta a rota completa com os nós obrigatórios
+            rota_completa = [origem]
+
+            if prelimpeza != "Sem Limpeza":
+                rota_completa.append(prelimpeza)
+
+            if origemsecador != "Sem Secador":
+                rota_completa.append(origemsecador)
+
+            rota_completa.append(destino)
+
+            # Verifica se todos os trechos da rota têm caminho
+            rota_valida = all(nx.has_path(G, rota_completa[i], rota_completa[i+1]) for i in range(len(rota_completa)-1))
+
+            if rota_valida:
+                # Tenta construir o caminho trecho a trecho, com tentativa de resolver conflito
+                caminho = []
                 conflito = False
-                for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                    if i == j:
-                        continue
-                    if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+
+                for j in range(len(rota_completa) - 1):
+                    origem_trecho = rota_completa[j]
+                    destino_trecho = rota_completa[j + 1]
+                    trecho_conflitante = True
+
+                    # Primeiro tenta o caminho com A*
+                    try:
+                        subcaminho = nx.astar_path(G, origem_trecho, destino_trecho, heuristic=heuristica_no_simples)
+                        pares_arestas = set(zip(subcaminho, subcaminho[1:]))
+
+                        conflito_local = any(
+                            pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
+                            for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
+                        )
+
+                        if not conflito_local:
+                            trecho_conflitante = False
+                            if j > 0:
+                                subcaminho = subcaminho[1:]
+                            caminho.extend(subcaminho)
+                    except nx.NetworkXNoPath:
+                        pass
+
+                    # Se não conseguiu resolver com A*, tenta caminhos alternativos
+                    if trecho_conflitante:
+                        try:
+                            for alt_sub in nx.all_shortest_paths(G, origem_trecho, destino_trecho):
+                                pares_arestas = set(zip(alt_sub, alt_sub[1:]))
+                                conflito_local = any(
+                                    pares_arestas & set(zip(outro_caminho, outro_caminho[1:]))
+                                    for k, outro_caminho in st.session_state["rotas_ativas"].items() if k != i
+                                )
+                                if not conflito_local:
+                                    trecho_conflitante = False
+                                    if j > 0:
+                                        alt_sub = alt_sub[1:]
+                                    caminho.extend(alt_sub)
+                                    break
+                        except nx.NetworkXNoPath:
+                            pass
+
+                    if trecho_conflitante:
                         conflito = True
-                        st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
+                        st.session_state["mensagens_rotas"][i]["erro"] = (
+                            f"⚠️ Conflito no trecho: {origem_trecho} → {destino_trecho}"
+                        )
                         st.session_state["status_rotas"][i] = "parado"
                         break
+
                 if not conflito:
                     st.session_state[f"origem_{i}"] = origem
                     st.session_state[f"destino_{i}"] = destino
@@ -142,14 +210,13 @@ for i, rota in enumerate(rotas):
                     st.session_state[f"origemsecador_{i}"] = origemsecador
                     st.session_state["status_rotas"][i] = "executando"
                     st.session_state["rotas_ativas"][i] = caminho
-                    # limpa erro antigo
                     st.session_state["mensagens_rotas"][i]["erro"] = None
-                    # define nova mensagem de sucesso
                     st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
-
             else:
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
+
+
 
     with col8:
         # Pausar
