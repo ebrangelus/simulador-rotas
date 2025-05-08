@@ -275,12 +275,19 @@ for i, rota in enumerate(rotas):
 
                 for caminho in caminhos_possiveis:
                     conflito = False
-                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                        if i == j:
-                            continue
-                        if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
-                            conflito = True
-                            break
+                def caminho_sem_nos_especificos(caminho, ignorar_nos={"Sem Limpeza", "Sem Secador"}):
+                    return [no for no in caminho if no not in ignorar_nos]
+
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                    # Remove os nós ignorados
+                    caminho_filtrado = caminho_sem_nos_especificos(caminho)
+                    outro_filtrado = caminho_sem_nos_especificos(outro_caminho)
+                    if set(zip(caminho_filtrado, caminho_filtrado[1:])) & set(zip(outro_filtrado, outro_filtrado[1:])):
+                        conflito = True
+                        break
+
                     if not conflito:
                         caminho_final = caminho
                         break
