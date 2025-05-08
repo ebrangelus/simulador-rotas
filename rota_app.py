@@ -1,8 +1,7 @@
-
 import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
-import re # função euristica
+import re  # função eurística
 
 def heuristica_no_simples(u, v):
     def extrair_numero(no):
@@ -16,13 +15,13 @@ st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 G = nx.DiGraph()
 
 # Definindo os nós (origens, intermediários, destinos)
-vb = [f"V-{i}" for i in range(1, 81)] # declarado 80 valvulas
-el = [f"E-{i}" for i in range(1, 21)] # declarado 20 elevadores
-ct = [f"CT-{i}" for i in range(1, 51)] # declarado 50 cts
-rt = [f"RT-{i}" for i in range(1, 10)] # declarado 10 rts
-tc = [f"TC-{i}" for i in range(1, 10)] # declarado 10 tcs
-vr = [f"VR-{i}" for i in range(1, 10)] # declarado 10 vrs
-val = [f"VAL-{i}" for i in range(1, 10)] # declarado 30 vals
+vb = [f"V-{i}" for i in range(1, 81)]  # declarado 80 valvulas
+el = [f"E-{i}" for i in range(1, 21)]  # declarado 20 elevadores
+ct = [f"CT-{i}" for i in range(1, 51)]  # declarado 50 cts
+rt = [f"RT-{i}" for i in range(1, 10)]  # declarado 10 rts
+tc = [f"TC-{i}" for i in range(1, 10)]  # declarado 10 tcs
+vr = [f"VR-{i}" for i in range(1, 10)]  # declarado 10 vrs
+val = [f"VAL-{i}" for i in range(1, 10)]  # declarado 30 vals
 
 origens = ["MOEGA 1", "MOEGA 2", "SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08"]
 intermediarios = vb + el + ct + rt + tc + vr + val
@@ -135,16 +134,16 @@ for i, rota in enumerate(rotas):
         
     with col7:
         if st.button("▶️ Executar", key=f"executar_{i}"):
-            rota_completa = [origem]
 
+            # Lógica de construção do caminho completo
+            rota_completa = [origem]
             if prelimpeza != "Sem Limpeza":
                 rota_completa.append(prelimpeza)
-
             if origemsecador != "Sem Secador":
                 rota_completa.append(origemsecador)
-
             rota_completa.append(destino)
 
+            # Verificação do caminho válido no grafo
             rota_valida = all(nx.has_path(G, rota_completa[j], rota_completa[j + 1]) for j in range(len(rota_completa) - 1))
 
             if rota_valida:
@@ -158,6 +157,7 @@ for i, rota in enumerate(rotas):
                     trecho_conflitante = True
                     subcaminhos = []
 
+                    # Primeiro tenta o caminho mais curto
                     try:
                         subcaminhos.append(nx.shortest_path(G, origem_trecho, destino_trecho))
                     except nx.NetworkXNoPath:
@@ -178,6 +178,7 @@ for i, rota in enumerate(rotas):
                                 break
 
                     if trecho_conflitante:
+                        # Se o caminho mais curto estiver com conflito, tenta alternativas
                         try:
                             for alt_sub in nx.all_simple_paths(G, origem_trecho, destino_trecho, cutoff=10):
                                 pares_arestas = set(zip(alt_sub, alt_sub[1:]))
@@ -190,6 +191,21 @@ for i, rota in enumerate(rotas):
                                     if j > 0:
                                         alt_sub = alt_sub[1:]
                                     caminho.extend(alt_sub)
+                                    break
+                        except nx.NetworkXNoPath:
+                            pass
+
+                    if trecho_conflitante:
+                        # Se mesmo as alternativas falharem, tenta a heurística
+                        try:
+                            for sub in nx.heuristic_path(G, origem_trecho, destino_trecho, heuristic=heuristica_no_simples):
+                                pares_arestas = set(zip(sub, sub[1:]))
+                                conflito_local = any(
+                                    pares_arestas & set(zip(outro, outro[1:]))
+                                    for k, outro in st.session_state["rotas_ativas"].items() if k != i
+                                )
+                                if not conflito_local:
+                                    caminho.extend(sub)
                                     break
                         except nx.NetworkXNoPath:
                             pass
@@ -213,15 +229,12 @@ for i, rota in enumerate(rotas):
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
 
-
-
+    # Exibição de status e mensagens
     with col8:
-        # Pausar
         if st.button("⏸️ Pausar", key=f"pausar_{i}"):
             st.session_state["status_rotas"][i] = "pausado"
 
     with col9:
-        # Parar
         if st.button("⏹️ Parar", key=f"parar_{i}"):
             st.session_state["status_rotas"][i] = "parado"
             st.session_state["rotas_ativas"].pop(i, None)
@@ -238,10 +251,8 @@ for i, rota in enumerate(rotas):
             st.markdown("🔴")
 
     with col11:
-        # Limpar mensagem de erro/sucesso
         mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
         mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
-
         if mensagem_erro:
             st.error(mensagem_erro)
         elif mensagem_sucesso:
