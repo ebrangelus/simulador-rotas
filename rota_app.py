@@ -236,113 +236,34 @@ for i, rota in enumerate(rotas):
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
         
     with col7:
+        # Executar
         if st.button("▶️ Executar", key=f"executar_{i}"):
-
-        # Lógica de construção do caminho completo
-            rota_completa = [origem]
-        if prelimpeza != "Sem Limpeza":
-            rota_completa.append(prelimpeza)
-        if origemsecador != "Sem Secador":
-            rota_completa.append(origemsecador)
-            rota_completa.append(destino)
-
-        # Verificação do caminho válido no grafo, só após pressionar o botão
-            rota_valida = all(nx.has_path(G, rota_completa[j], rota_completa[j + 1]) for j in range(len(rota_completa) - 1))
-
-            if rota_valida:
-                caminho = []
+            if nx.has_path(G, origem, destino):
+                caminho = nx.shortest_path(G, origem, destino)
                 conflito = False
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                    if set(zip(caminho, caminho[1:])) & set(zip(outro_caminho, outro_caminho[1:])):
+                        conflito = True
+                        st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito com {rotas[j]}!"
+                        st.session_state["status_rotas"][i] = "parado"
+                        break
+                if not conflito:
+                    st.session_state[f"origem_{i}"] = origem
+                    st.session_state[f"destino_{i}"] = destino
+                    st.session_state[f"prelimpeza_{i}"] = prelimpeza
+                    st.session_state[f"origemsecador_{i}"] = origemsecador
+                    st.session_state["status_rotas"][i] = "executando"
+                    st.session_state["rotas_ativas"][i] = caminho
+                    # limpa erro antigo
+                    st.session_state["mensagens_rotas"][i]["erro"] = None
+                    # define nova mensagem de sucesso
+                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
 
-                for j in range(len(rota_completa) - 1):
-                    origem_trecho = rota_completa[j]
-                    destino_trecho = rota_completa[j + 1]
-
-                    trecho_conflitante = True
-                    subcaminhos = []
-
-                    # Primeiro tenta o caminho mais curto
-                    try:
-                        subcaminhos.append(nx.shortest_path(G, origem_trecho, destino_trecho))
-                    except nx.NetworkXNoPath:
-                        pass
-
-                if subcaminhos:
-                    for sub in subcaminhos:
-                        pares_arestas = set(zip(sub, sub[1:]))
-                        conflito_local = any(
-                            pares_arestas & set(zip(outro, outro[1:]))
-                            for k, outro in st.session_state["rotas_ativas"].items() if k != i
-                        )
-                        if not conflito_local:
-                            trecho_conflitante = False
-                            if j > 0:
-                                sub = sub[1:]
-                            caminho.extend(sub)
-                            break
-
-                if trecho_conflitante:
-                    # Se o caminho mais curto estiver com conflito, tenta alternativas
-                    try:
-                        for alt_sub in nx.all_simple_paths(G, origem_trecho, destino_trecho, cutoff=10):
-                            pares_arestas = set(zip(alt_sub, alt_sub[1:]))
-                            conflito_local = any(
-                                pares_arestas & set(zip(outro, outro[1:]))
-                                for k, outro in st.session_state["rotas_ativas"].items() if k != i
-                            )
-                            if not conflito_local:
-                                trecho_conflitante = False
-                                if j > 0:
-                                    alt_sub = alt_sub[1:]
-                                caminho.extend(alt_sub)
-                                break
-                    except nx.NetworkXNoPath:
-                        pass
-
-                if trecho_conflitante:
-                    # Se mesmo as alternativas falharem, tenta a heurística
-                    try:
-                        sub = nx.astar_path(G, origem_trecho, destino_trecho, heuristic=heuristica_no_simples)
-                        pares_arestas = set(zip(sub, sub[1:]))
-                        conflito_local = any(
-                            pares_arestas & set(zip(outro, outro[1:]))
-                            for k, outro in st.session_state["rotas_ativas"].items() if k != i
-                        )
-                        if not conflito_local:
-                            if j > 0:
-                                sub = sub[1:]
-                            caminho.extend(sub)
-                            trecho_conflitante = False
-                    except nx.NetworkXNoPath:
-                        pass
-
-                if trecho_conflitante:
-                    conflito = True
-                    # Inicializando mensagens de erro se não existir
-                    if i not in st.session_state["mensagens_rotas"]:
-                        st.session_state["mensagens_rotas"][i] = {}
-                    st.session_state["mensagens_rotas"][i]["erro"] = f"⚠️ Conflito no trecho: {origem_trecho} → {destino_trecho}"
-                    st.session_state["status_rotas"][i] = "parado"
-                    break
-
-            if not conflito:
-                # Inicializando as mensagens de sucesso se não existir
-                if i not in st.session_state["mensagens_rotas"]:
-                    st.session_state["mensagens_rotas"][i] = {}
-
-                st.session_state[f"origem_{i}"] = origem
-                st.session_state[f"destino_{i}"] = destino
-                st.session_state[f"prelimpeza_{i}"] = prelimpeza
-                st.session_state[f"origemsecador_{i}"] = origemsecador
-                st.session_state["status_rotas"][i] = "executando"
-                st.session_state["rotas_ativas"][i] = caminho
-                st.session_state["mensagens_rotas"][i]["erro"] = None
-                st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho)}"
-        else:
-            # Inicializando as mensagens de erro se não existir
-            if i not in st.session_state["mensagens_rotas"]:
-                st.session_state["mensagens_rotas"][i] = {}
-            st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
-            st.session_state["status_rotas"][i] = "parado"
+            else:
+                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
+                st.session_state["status_rotas"][i] = "parado"
 
 
     # Exibição de status e mensagens
