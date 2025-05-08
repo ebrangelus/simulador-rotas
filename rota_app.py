@@ -268,60 +268,60 @@ for i, rota in enumerate(rotas):
         
     with col7:
     # Inicializa a variável fora do botão
-    conflitos_detectados = []
+        conflitos_detectados = []
 
     # Executar
-    if st.button("▶️ Executar", key=f"executar_{i}"):
-        if nx.has_path(G, origem, destino):
-            caminhos_possiveis = list(nx.shortest_simple_paths(G, origem, destino))
-            caminho_final = None
+        if st.button("▶️ Executar", key=f"executar_{i}"):
+            if nx.has_path(G, origem, destino):
+                caminhos_possiveis = list(nx.shortest_simple_paths(G, origem, destino))
+                caminho_final = None
 
-            for caminho in caminhos_possiveis:
-                arestas_caminho = set(zip(caminho, caminho[1:]))
-                conflito = False
+                for caminho in caminhos_possiveis:
+                    arestas_caminho = set(zip(caminho, caminho[1:]))
+                    conflito = False
 
-                for j, outro_caminho in st.session_state["rotas_ativas"].items():
-                    if i == j:
-                        continue
+                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                        if i == j:
+                            continue
 
-                    arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
+                        arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
 
-                    if arestas_caminho & arestas_outro_caminho:
-                        conflito = True
-                        conflitos_detectados.append((caminho, outro_caminho, arestas_caminho & arestas_outro_caminho))
+                        if arestas_caminho & arestas_outro_caminho:
+                            conflito = True
+                            conflitos_detectados.append((caminho, outro_caminho, arestas_caminho & arestas_outro_caminho))
+                            break
+
+                    if not conflito:
+                        caminho_final = caminho
                         break
 
-                if not conflito:
-                    caminho_final = caminho
-                    break
-
-            if caminho_final:
-                st.session_state[f"origem_{i}"] = origem
-                st.session_state[f"destino_{i}"] = destino
-                st.session_state[f"prelimpeza_{i}"] = prelimpeza
-                st.session_state[f"origemsecador_{i}"] = origemsecador
-                st.session_state["status_rotas"][i] = "executando"
-                st.session_state["rotas_ativas"][i] = caminho_final
-                st.session_state["mensagens_rotas"][i]["erro"] = None
-                st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_final)}"
+                if caminho_final:
+                    st.session_state[f"origem_{i}"] = origem
+                    st.session_state[f"destino_{i}"] = destino
+                    st.session_state[f"prelimpeza_{i}"] = prelimpeza
+                    st.session_state[f"origemsecador_{i}"] = origemsecador
+                    st.session_state["status_rotas"][i] = "executando"
+                    st.session_state["rotas_ativas"][i] = caminho_final
+                    st.session_state["mensagens_rotas"][i]["erro"] = None
+                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_final)}"
+                else:
+                    st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Conflito em todos os caminhos possíveis"
+                    st.session_state["status_rotas"][i] = "parado"
             else:
-                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Conflito em todos os caminhos possíveis"
+                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
-        else:
-            st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
-            st.session_state["status_rotas"][i] = "parado"
 
-with col11:
-    mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
-    mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
+    with col11:
+        mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
+        mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
 
-    # Exibe conflitos se existirem
-    if conflitos_detectados:
-        for caminho_1, caminho_2, arestas_conflito in conflitos_detectados:
-            st.write(f"Conflito entre: {' → '.join(caminho_1)} e {' → '.join(caminho_2)}")
-            st.write(f"Arestas em conflito: {arestas_conflito}")
+        # Exibe conflitos se existirem
+        if conflitos_detectados:
+            for caminho_1, caminho_2, arestas_conflito in conflitos_detectados:
+                st.write(f"Conflito entre: {' → '.join(caminho_1)} e {' → '.join(caminho_2)}")
+                st.write(f"Arestas em conflito: {arestas_conflito}")
 
-    if mensagem_erro:
-        st.error(mensagem_erro)
-    elif mensagem_sucesso:
-        st.success(mensagem_sucesso)
+        if mensagem_erro:
+            st.error(mensagem_erro)
+        elif mensagem_sucesso:
+            st.success(mensagem_sucesso)
