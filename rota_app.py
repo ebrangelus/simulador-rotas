@@ -61,43 +61,73 @@ G.add_edge("V-8", "E-4") # SAIDA 2
 # E-1
 G.add_edge("E-1", "V-11")
 
-# V11 
+# E-2
+G.add_edge("E-2", "V-13")
+
+# V-13
+G.add_edge("V-13", "CT-3") # SAIDA 1 - SP1-SP5
+G.add_edge("V-13", "V-14") # SAIDA 2 
+
+# V-14
+G.add_edge("V-14", "CT-4") # SAIDA 1 - SP6-SP10
+G.add_edge("V-14", "CT-8") # SAIDA 1 - SP6-SP10
+
+# V-11 
 G.add_edge("V-11", "V-12") # SAIDA 1
 G.add_edge("V-11", "Sem Limpeza") # CT4 manda para os SP06-10
 G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
 G.add_edge("Sem Secador", "CT-04") # CT4 manda para os SP06-10
 
-# V12 
+# V-12 
 G.add_edge("V-12", "V-53") # SAIDA 2
 G.add_edge("V-12", "Sem Limpeza") # CT3 manda para os SP01-05
 G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
 G.add_edge("Sem Secador", "CT-03") # CT3 manda para os SP01-05
 
-# V53
+# V-53
 G.add_edge("V-53", "CT-7") # SAIDA 1
 G.add_edge("V-53", "CT-23") # SAIDA 2
 
 # CT-7 - SAIDA UNICA
 G.add_edge("CT-7", "V-19")
 
-# V19 
+# CT-8 - SAIDA UNICA
+G.add_edge("CT-8", "V-19")
+
+
+# V-19 
 G.add_edge("V-19", "MLP-1") # SAIDA 1
 G.add_edge("V-19", "V-20") # SAIDA 2
 
-# V20
+# V-20
 G.add_edge("V-20", "CT-09") # SAIDA 1
 G.add_edge("V-20", "V-21") # SAIDA 2
 
-# V21
+# V-21
 G.add_edge("V-21", "MLP-2") # SAIDA 1
 G.add_edge("V-21", "MLP-3") # SAIDA 2
+
+# V-22
+G.add_edge("V-22", "MLP-2") # SAIDA 1
+G.add_edge("V-22", "V-23") # SAIDA 2
+
+# V-23
+G.add_edge("V-23", "MLP-3") # SAIDA 1
+G.add_edge("V-23", "CT-10") # SAIDA 2
 
 # CT-9 - SAIDA UNICA
 G.add_edge("CT-9", "V-28")
 
+# CT-10 - SAIDA UNICA
+G.add_edge("CT-10", "V-29")
+
 # V28
 G.add_edge("V-28", "E-7") # SAIDA 1
 G.add_edge("V-28", "E-6") # SAIDA 2
+
+# V-29
+G.add_edge("V-29", "E-8") # SAIDA 1
+G.add_edge("V-29", "E-9") # SAIDA 2
 
 # E-7
 G.add_edge("E-7", "V-33") # SAIDA UNICA
@@ -131,6 +161,7 @@ G.add_edge("V-43", "E-9") # SAIDA 1
 G.add_edge("V-43", "E-7") # SAIDA 2
 
 # E-7
+# E-8
 # E-9
 
 
