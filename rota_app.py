@@ -133,7 +133,7 @@ for i, rota in enumerate(rotas):
     with col6:
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
         
-       with col7:
+    with col7:
         if st.button("▶️ Executar", key=f"executar_{i}"):
             rota_completa = [origem]
 
