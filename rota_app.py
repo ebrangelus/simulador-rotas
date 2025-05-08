@@ -249,22 +249,22 @@ for i, rota in enumerate(rotas):
         # Verificação do caminho válido no grafo, só após pressionar o botão
             rota_valida = all(nx.has_path(G, rota_completa[j], rota_completa[j + 1]) for j in range(len(rota_completa) - 1))
 
-        if rota_valida:
-            caminho = []
-            conflito = False
+            if rota_valida:
+                caminho = []
+                conflito = False
 
-            for j in range(len(rota_completa) - 1):
-                origem_trecho = rota_completa[j]
-                destino_trecho = rota_completa[j + 1]
+                for j in range(len(rota_completa) - 1):
+                    origem_trecho = rota_completa[j]
+                    destino_trecho = rota_completa[j + 1]
 
-                trecho_conflitante = True
-                subcaminhos = []
+                    trecho_conflitante = True
+                    subcaminhos = []
 
-                # Primeiro tenta o caminho mais curto
-                try:
-                    subcaminhos.append(nx.shortest_path(G, origem_trecho, destino_trecho))
-                except nx.NetworkXNoPath:
-                    pass
+                    # Primeiro tenta o caminho mais curto
+                    try:
+                        subcaminhos.append(nx.shortest_path(G, origem_trecho, destino_trecho))
+                    except nx.NetworkXNoPath:
+                        pass
 
                 if subcaminhos:
                     for sub in subcaminhos:
