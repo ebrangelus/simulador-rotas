@@ -24,7 +24,7 @@ vr = [f"VR-{i}" for i in range(1, 10)]  # declarado 10 vrs
 val = [f"VAL-{i}" for i in range(1, 10)]  # declarado 30 vals
 
 origens = ["MOEGA 1", "MOEGA 2", "SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08"]
-intermediarios = vb + el + ct + rt + tc + vr + val
+intermediarios = vb + el + ct + rt + tc + vr + val + ["CT-201", "V-201", "V-202"]
 limpeza = ["Sem Limpeza", "MLP-1", "MLP-2", "MLP-3", "MLP-4"]
 secador = ["Sem Secador", "SEC-1", "SEC-2"]
 destinos = ["SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08", "SIL-01", "SIL-02", "SIL-03", "SIL-04", "SIL-05"]
@@ -35,28 +35,130 @@ G.add_nodes_from(origens + intermediarios + limpeza + secador + destinos)
 # Adicionando as arestas
 G.add_edge("MOEGA 1", "V-1")
 G.add_edge("MOEGA 2", "V-4")
-G.add_edge("V-1", "CT-1")
-G.add_edge("V-1", "CT-2")
-G.add_edge("V-4", "CT-1")
-G.add_edge("V-4", "CT-2")
-G.add_edge("CT-1", "V-7")
-G.add_edge("CT-2", "V-8")
-G.add_edge("V-7", "E-1")
-G.add_edge("V-7", "E-3")
-G.add_edge("V-8", "E-2")
-G.add_edge("V-8", "E-4")
 
-#caminhos elevador 1
+# V-1
+G.add_edge("V-1", "CT-1") # SAIDA 1
+G.add_edge("V-1", "CT-2") # SAIDA 2
+
+# V-4
+G.add_edge("V-4", "CT-1") # SADIA 1
+G.add_edge("V-4", "CT-2") # SAIDA 2
+
+# CT-1
+G.add_edge("CT-1", "V-7")
+
+# CT-2
+G.add_edge("CT-2", "V-8")
+
+# V-7
+G.add_edge("V-7", "E-1") # SAIDA 1
+G.add_edge("V-7", "E-3") # SAIDA 2
+
+# V-8
+G.add_edge("V-8", "E-2") # SAIDA 1
+G.add_edge("V-8", "E-4") # SAIDA 2
+
+# E-1
 G.add_edge("E-1", "V-11")
-G.add_edge("V-11", "V-12")
+
+# V11 
+G.add_edge("V-11", "V-12") # SAIDA 1
 G.add_edge("V-11", "Sem Limpeza") # CT4 manda para os SP06-10
 G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
 G.add_edge("Sem Secador", "CT-04") # CT4 manda para os SP06-10
 
-G.add_edge("V-12", "V-53")
+# V12 
+G.add_edge("V-12", "V-53") # SAIDA 2
 G.add_edge("V-12", "Sem Limpeza") # CT3 manda para os SP01-05
 G.add_edge("Sem Limpeza", "Sem Secador") # sem limpeza e sem secagem
 G.add_edge("Sem Secador", "CT-03") # CT3 manda para os SP01-05
+
+# V53
+G.add_edge("V-53", "CT-7") # SAIDA 1
+G.add_edge("V-53", "CT-23") # SAIDA 2
+
+# CT-7 - SAIDA UNICA
+G.add_edge("CT-7", "V-19")
+
+# V19 
+G.add_edge("V-19", "MLP-1") # SAIDA 1
+G.add_edge("V-19", "V-20") # SAIDA 2
+
+# V20
+G.add_edge("V-20", "CT-09") # SAIDA 1
+G.add_edge("V-20", "V-21") # SAIDA 2
+
+# V21
+G.add_edge("V-21", "MLP-2") # SAIDA 1
+G.add_edge("V-21", "MLP-3") # SAIDA 2
+
+# CT-9 - SAIDA UNICA
+G.add_edge("CT-9", "V-28")
+
+# V28
+G.add_edge("V-28", "E-7") # SAIDA 1
+G.add_edge("V-28", "E-6") # SAIDA 2
+
+# E-7
+G.add_edge("E-7", "V-33") # SAIDA UNICA
+
+# V-33
+G.add_edge("V-33", "CT-20") # SAIDA 1
+G.add_edge("V-33", "V-34") # SAIDA 2
+
+# CT20
+G.add_edge("CT-20", "V-201") # SAIDA 1
+G.add_edge("CT-20", "V-43") # SAIDA 2
+
+# V-201
+G.add_edge("V-201", "CT-201") # SAIDA 1
+G.add_edge("V-201", "V-18") # SAIDA 2
+
+# CT-201
+G.add_edge("CT-201", "V-202") # SAIDA 1
+
+# V-202
+G.add_edge("V-202", "V-7") # SAIDA 1
+G.add_edge("V-202", "V-8") # SAIDA 2
+
+
+# V-18
+G.add_edge("V-18", "MLP-3") # SAIDA 1
+G.add_edge("V-18", "MLP-1") # SAIDA 2
+
+# V-43
+G.add_edge("V-43", "E-9") # SAIDA 1
+G.add_edge("V-43", "E-7") # SAIDA 2
+
+# E-7
+# E-9
+
+
+# V-34
+G.add_edge("V-34", "CT-14") # SAIDA 1 - CT-14 É CAMINHO PARA SILOS SA 1-4
+G.add_edge("V-34", "V-48") # SAIDA 2
+
+# CT-14
+G.add_edge("CT-14", "CT-16") # SAIDA 1 - MANDA PARA SA1-4
+G.add_edge("CT-14", "CT-17") # SAIDA 2 - MANDA PARA SA4-8
+
+G.add_edge("CT-14", "Sem Limpeza") 
+G.add_edge("Sem Secador", "CT-16") # SA1-4 SEM LIMPEZA E SECADOR
+G.add_edge("Sem Secador", "CT-17") # SA5-8 SEM LIMPEZA E SECADOR
+
+# CT-16 - SA1 AO 4
+G.add_edge("CT-16", "SA-01")
+G.add_edge("CT-16", "SA-02")
+G.add_edge("CT-16", "SA-03")
+G.add_edge("CT-16", "SA-04")
+
+# CT-17 - SA5 AO 8
+G.add_edge("CT-16", "SA-05")
+G.add_edge("CT-16", "SA-06")
+G.add_edge("CT-16", "SA-07")
+G.add_edge("CT-16", "SA-08")
+
+
 
 # caminho para SP06 - 10
 G.add_edge("CT-04", "SP-06")
