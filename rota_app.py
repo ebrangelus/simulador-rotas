@@ -210,7 +210,7 @@ G.add_edge("CT-3", "SP-05")
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
 
-# Inicializações
+
 if "rotas_ativas" not in st.session_state:
     st.session_state["rotas_ativas"] = {}
 
@@ -222,55 +222,34 @@ if "mensagens_rotas" not in st.session_state:
 
 st.title("Simulador de Rotas Industriais")
 
-# Loop para exibir as rotas
 for i, rota in enumerate(rotas):
     col1, col2, col3, col4, col5, col6, col7, col8 , col9, col10, col11 = st.columns([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2])
 
     with col1:
         st.write(f"**{rota}**")
 
-    # Recupera os valores salvos anteriormente, se existirem
     valor_origem = st.session_state.get(f"origem_{i}", origens[0])
     valor_prelimpeza = st.session_state.get(f"prelimpeza_{i}", limpeza[0])
     valor_destino = st.session_state.get(f"destino_{i}", destinos[0])
     valor_secador = st.session_state.get(f"origemsecador_{i}", secador[0])
 
     with col2:
-        origem = st.selectbox(
-            "Origem", origens,
-            index=origens.index(valor_origem) if valor_origem in origens else 0,
-            key=f"select_origem_{i}"
-        )
+        origem = st.selectbox("Origem", origens, index=origens.index(valor_origem) if valor_origem in origens else 0, key=f"select_origem_{i}")
 
     with col3:
-        prelimpeza = st.selectbox(
-            "Pré Limpeza", limpeza,
-            index=limpeza.index(valor_prelimpeza) if valor_prelimpeza in limpeza else 0,
-            key=f"select_prelimpeza_{i}"
-        )
+        prelimpeza = st.selectbox("Pré Limpeza", limpeza, index=limpeza.index(valor_prelimpeza) if valor_prelimpeza in limpeza else 0, key=f"select_prelimpeza_{i}")
 
     with col4:
-        destino = st.selectbox(
-            "Destino", destinos,
-            index=destinos.index(valor_destino) if valor_destino in destinos else 0,
-            key=f"select_destino_{i}"
-        )
+        destino = st.selectbox("Destino", destinos, index=destinos.index(valor_destino) if valor_destino in destinos else 0, key=f"select_destino_{i}")
 
     with col5:
-        origemsecador = st.selectbox(
-            "Secador", secador,
-            index=secador.index(valor_secador) if valor_secador in secador else 0,
-            key=f"select_origemsecador_{i}"
-        )
+        origemsecador = st.selectbox("Secador", secador, index=secador.index(valor_secador) if valor_secador in secador else 0, key=f"select_origemsecador_{i}")
 
     with col6:
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
-        
-    with col7:
-    # Inicializa a variável fora do botão
-        conflitos_detectados = []
 
-    # Executar
+    with col7:
+        conflitos_detectados = []
         if st.button("▶️ Executar", key=f"executar_{i}"):
             if nx.has_path(G, origem, destino):
                 caminhos_possiveis = list(nx.shortest_simple_paths(G, origem, destino))
@@ -283,9 +262,7 @@ for i, rota in enumerate(rotas):
                     for j, outro_caminho in st.session_state["rotas_ativas"].items():
                         if i == j:
                             continue
-
                         arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
-
                         if arestas_caminho & arestas_outro_caminho:
                             conflito = True
                             conflitos_detectados.append((caminho, outro_caminho, arestas_caminho & arestas_outro_caminho))
@@ -324,24 +301,12 @@ for i, rota in enumerate(rotas):
 
     with col10:
         status = st.session_state["status_rotas"][i]
-        if status == "executando":
-            st.markdown("🟢")
-        elif status == "pausado":
-            st.markdown("🟡")
-        else:
-            st.markdown("🔴")
+        st.markdown("🟢" if status == "executando" else "🟡" if status == "pausado" else "🔴")
 
     with col11:
-        mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
-        mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
-
-        # Exibe conflitos se existirem
-        if conflitos_detectados:
-            for caminho_1, caminho_2, arestas_conflito in conflitos_detectados:
-                st.write(f"Conflito entre: {' → '.join(caminho_1)} e {' → '.join(caminho_2)}")
-                st.write(f"Arestas em conflito: {arestas_conflito}")
-
-        if mensagem_erro:
-            st.error(mensagem_erro)
-        elif mensagem_sucesso:
-            st.success(mensagem_sucesso)
+        erro = st.session_state["mensagens_rotas"][i]["erro"]
+        sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
+        if erro:
+            st.error(erro)
+        if sucesso:
+            st.success(sucesso)
