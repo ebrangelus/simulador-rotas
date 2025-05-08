@@ -311,6 +311,26 @@ for i, rota in enumerate(rotas):
                 st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
                 st.session_state["status_rotas"][i] = "parado"
 
+    with col8:
+        if st.button("⏸️ Pausar", key=f"pausar_{i}"):
+            st.session_state["status_rotas"][i] = "pausado"
+
+    with col9:
+        if st.button("⏹️ Parar", key=f"parar_{i}"):
+            st.session_state["status_rotas"][i] = "parado"
+            st.session_state["rotas_ativas"].pop(i, None)
+            st.session_state["mensagens_rotas"][i]["erro"] = None
+            st.session_state["mensagens_rotas"][i]["sucesso"] = None
+
+    with col10:
+        status = st.session_state["status_rotas"][i]
+        if status == "executando":
+            st.markdown("🟢")
+        elif status == "pausado":
+            st.markdown("🟡")
+        else:
+            st.markdown("🔴")
+
     with col11:
         mensagem_erro = st.session_state["mensagens_rotas"][i]["erro"]
         mensagem_sucesso = st.session_state["mensagens_rotas"][i]["sucesso"]
