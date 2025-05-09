@@ -179,12 +179,18 @@ G.add_edge("V-22", "V-23") # SAIDA 2
 # V-23
 G.add_edge("V-23", "MLP-3") # SAIDA 1
 G.add_edge("V-23", "CT-10") # SAIDA 2
-
 # V-24
+G.add_edge("V-24", "CT-9") # SAIDA 1
+G.add_edge("V-24", "CT-10") # SAIDA 2
 # V-25
+G.add_edge("V-25", "CT-9") # SAIDA 1
+G.add_edge("V-25", "CT-10") # SAIDA 2
 # V-26
+G.add_edge("V-26", "V-27") # SAIDA 1
+G.add_edge("V-26", "CT-10") # SAIDA 2
 # V-27
-
+G.add_edge("V-27", "CT-9") # SAIDA 1
+G.add_edge("V-27", "CT-11") # SAIDA 2
 # V-28
 G.add_edge("V-28", "E-7") # SAIDA 1
 G.add_edge("V-28", "E-6") # SAIDA 2
@@ -192,6 +198,8 @@ G.add_edge("V-28", "E-6") # SAIDA 2
 G.add_edge("V-29", "E-8") # SAIDA 1
 G.add_edge("V-29", "E-9") # SAIDA 2
 # V-30
+G.add_edge("V-30", "V-31") # SAIDA 1
+G.add_edge("V-30", "CT-22") # SAIDA 2
 # V-31
 G.add_edge("V-31", "") # SAIDA 1
 G.add_edge("V-31", "TC-1") # SAIDA 2 - E-5
@@ -205,17 +213,36 @@ G.add_edge("V-33", "V-34") # SAIDA 2
 G.add_edge("V-34", "CT-14") # SAIDA 1 - CT-14 É CAMINHO PARA SILOS SA 1-4
 G.add_edge("V-34", "V-48") # SAIDA 2
 # V-35
+G.add_edge("V-35", "V-36") # SAIDA 1
+G.add_edge("V-35", "CT-20") # SAIDA 2
 # V-36
+G.add_edge("V-36", "V-51") # SAIDA 1
+G.add_edge("V-36", "CT-15") # SAIDA 2
 # V-37
+G.add_edge("V-37", "V-38") # SAIDA 1
+G.add_edge("V-37", "V-41") # SAIDA 2
 # V-38
+G.add_edge("V-38", "E-5") # SAIDA 1
+G.add_edge("V-38", "E-8") # SAIDA 2
 # V-39
+G.add_edge("V-39", "V-40") # SAIDA 1
+G.add_edge("V-39", "V-42") # SAIDA 2
 # V-40
+G.add_edge("V-40", "E-5") # SAIDA 1
+G.add_edge("V-40", "E-6") # SAIDA 2
 # V-41
+G.add_edge("V-41", "E-6") # SAIDA 1
+G.add_edge("V-41", "E-7") # SAIDA 2
 # V-42
+G.add_edge("V-42", "E-8") # SAIDA 1
+G.add_edge("V-42", "E-9") # SAIDA 2
 # V-43
 G.add_edge("V-43", "E-9") # SAIDA 1
 G.add_edge("V-43", "E-7") # SAIDA 2
-
+# V-44
+# V-45
+# V-46
+# V-47
 # V-48
 G.add_edge("V-48", "TC-2") # SAIDA 1 - E7
 G.add_edge("V-48", "TC-1") # SAIDA 2 - E7
