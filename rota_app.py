@@ -32,94 +32,14 @@ destinos = ["SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-0
 # Adicionando os nós no grafo
 G.add_nodes_from(origens + intermediarios + destinos)
 
-# MOEGAS
-G.add_edge("MOEGA 1", "V-1")
-G.add_edge("MOEGA 2", "V-4")
 
-# VALVULAS
-# V-1
-G.add_edge("V-1", "CT-1") # SAIDA 1
-G.add_edge("V-1", "CT-2") # SAIDA 2
-
-# V-4
-G.add_edge("V-4", "CT-1") # SADIA 1
-G.add_edge("V-4", "CT-2") # SAIDA 2
-
-
-# V-7
-G.add_edge("V-7", "E-1") # SAIDA 1
-G.add_edge("V-7", "E-3") # SAIDA 2
-# V-8
-G.add_edge("V-8", "E-2") # SAIDA 1
-G.add_edge("V-8", "E-4") # SAIDA 2
-
-# V-11 
-G.add_edge("V-11", "V-12") # SAIDA 1
-G.add_edge("V-11", "CT-4") # CT4 manda para os SP06-10
-# V-12 
-G.add_edge("V-12", "V-53") # SAIDA 2
-G.add_edge("V-12", "CT-3") # CT3 manda para os SP01-05
-# V-13
-G.add_edge("V-13", "CT-3") # SAIDA 1 - SP1-SP5
-G.add_edge("V-13", "V-14") # SAIDA 2 
-# V-14
-G.add_edge("V-14", "CT-4") # SAIDA 1 - SP6-SP10
-G.add_edge("V-14", "CT-8") # 
-
-# V-18
-G.add_edge("V-18", "MLP-3") # SAIDA 1
-G.add_edge("V-18", "MLP-1") # SAIDA 2
-# V-19 
-G.add_edge("V-19", "MLP-1") # SAIDA 1
-G.add_edge("V-19", "V-20") # SAIDA 2
-# V-20
-G.add_edge("V-20", "CT-9") # SAIDA 1
-G.add_edge("V-20", "V-21") # SAIDA 2
-# V-21
-G.add_edge("V-21", "MLP-2") # SAIDA 1
-G.add_edge("V-21", "MLP-3") # SAIDA 2
-# V-22
-G.add_edge("V-22", "MLP-2") # SAIDA 1
-G.add_edge("V-22", "V-23") # SAIDA 2
-# V-23
-G.add_edge("V-23", "MLP-3") # SAIDA 1
-G.add_edge("V-23", "CT-10") # SAIDA 2
-
-# V-28
-G.add_edge("V-28", "E-7") # SAIDA 1
-G.add_edge("V-28", "E-6") # SAIDA 2
-# V-29
-G.add_edge("V-29", "E-8") # SAIDA 1
-G.add_edge("V-29", "E-9") # SAIDA 2
-
-# V-33
-G.add_edge("V-33", "CT-20") # SAIDA 1
-G.add_edge("V-33", "V-34") # SAIDA 2
-# V-34
-G.add_edge("V-34", "CT-14") # SAIDA 1 - CT-14 É CAMINHO PARA SILOS SA 1-4
-G.add_edge("V-34", "V-48") # SAIDA 2
-
-# V-43
-G.add_edge("V-43", "E-9") # SAIDA 1
-G.add_edge("V-43", "E-7") # SAIDA 2
-
-# V-53
-G.add_edge("V-53", "CT-7") # SAIDA 1
-G.add_edge("V-53", "CT-23") # SAIDA 2
-
-
-# V-201
-G.add_edge("V-201", "CT-201") # SAIDA 1
-G.add_edge("V-201", "V-18") # SAIDA 2
-# V-202
-G.add_edge("V-202", "V-7") # SAIDA 1
-G.add_edge("V-202", "V-8") # SAIDA 2
-
-# CORREIA TRANSPORTADORAS - CT
+# ---------------------------------------------------CT - CORREIAS TRANSPORTADORAS---------------------------------------------------
 # CT-1
 G.add_edge("CT-1", "V-7")
 # CT-2
 G.add_edge("CT-2", "V-8")
+
+#SAIDAS
 # CT-03 - caminho para SP01-05
 G.add_edge("CT-3", "SP-01")
 G.add_edge("CT-3", "SP-02")
@@ -164,16 +84,165 @@ G.add_edge("CT-20", "V-43") # SAIDA 2
 # CT-201
 G.add_edge("CT-201", "V-202") # SAIDA 1
 
-# ELEVADORES
+# ---------------------------------------------------ELEVADORES---------------------------------------------------
 # E-1
-G.add_edge("E-1", "V-11")
+G.add_edge("E-1", "V-11") # SAIDA UNICA
 # E-2
-G.add_edge("E-2", "V-13")
+G.add_edge("E-2", "V-13") # SAIDA UNICA
+# E-3
+G.add_edge("E-3", "V-15") # SAIDA UNICA
+# E-4
+G.add_edge("E-4", "V-17") # SAIDA UNICA
+# E-5
+G.add_edge("E-5", "V-30") # SAIDA UNICA
+# E-6
+G.add_edge("E-6", "V-32") # SAIDA UNICA
 # E-7
 G.add_edge("E-7", "V-33") # SAIDA UNICA
-
 # E-8
+G.add_edge("E-8", "V-49") # SAIDA UNICA
 # E-9
+G.add_edge("E-7", "V-35") # SAIDA UNICA
+
+# --------------------------------------------------- MOEGAS ---------------------------------------------------
+G.add_edge("MOEGA 1", "V-1")
+G.add_edge("MOEGA 2", "V-4")
+
+
+# ---------------------------------------------------TC---------------------------------------------------
+# TC-1 MANDA PARA SECADOR 1
+G.add_edge("TC-1", "SEC-1") # SAIDA 1 - VEM E-5, 6, 7, 8, 9
+# TC-2 MANDA PARA SECADOR 2
+G.add_edge("TC-2", "SEC-2") # SAIDA 1
+
+# ---------------------------------------------------VALVULAS---------------------------------------------------
+# V-1
+G.add_edge("V-1", "CT-1") # SAIDA 1
+G.add_edge("V-1", "CT-2") # SAIDA 2
+# V-2 - Paralelo a V-1 na moega
+# V-3 - Paralelo a V-1 na moega
+
+# V-4 - Paralelo a V-1 na moega
+G.add_edge("V-4", "CT-1") # SADIA 1
+G.add_edge("V-4", "CT-2") # SAIDA 2
+# V-5 - Paralelo a V-4 na moega
+# V-6 - Paralelo a V-4 na moega
+
+# V-7
+G.add_edge("V-7", "E-1") # SAIDA 1
+G.add_edge("V-7", "E-3") # SAIDA 2
+# V-8
+G.add_edge("V-8", "E-2") # SAIDA 1
+G.add_edge("V-8", "E-4") # SAIDA 2
+# V-9
+G.add_edge("V-9", "E-3") # SAIDA 1
+G.add_edge("V-9", "E-4") # SAIDA 2
+# V-10
+G.add_edge("V-10", "E-3") # SAIDA 1
+G.add_edge("V-10", "E-4") # SAIDA 2
+# V-11 
+G.add_edge("V-11", "V-12") # SAIDA 1
+G.add_edge("V-11", "CT-4") # CT4 manda para os SP06-10
+# V-12 
+G.add_edge("V-12", "V-53") # SAIDA 2
+G.add_edge("V-12", "CT-3") # CT3 manda para os SP01-05
+# V-13
+G.add_edge("V-13", "CT-3") # SAIDA 1 - SP1-SP5
+G.add_edge("V-13", "V-14") # SAIDA 2 
+# V-14
+G.add_edge("V-14", "CT-4") # SAIDA 1 - SP6-SP10
+G.add_edge("V-14", "CT-8") # 
+# V-15
+G.add_edge("V-15", "CT-3") # SAIDA 1 - CAMINHO PARA SP-1 - 5
+G.add_edge("V-15", "V-16") # SAIDA 2
+# V-16
+G.add_edge("V-16", "V-54") # SAIDA 1
+G.add_edge("V-16", "CT-22") # SAIDA 2
+# V-17
+G.add_edge("V-17", "CT-8") # SAIDA 1 - CAMINHO PARA MPL'S E SECADORES
+G.add_edge("V-17", "CT-4") # SAIDA 2 - CAMINHO PARA SP-6 - 10
+# V-18
+G.add_edge("V-18", "MLP-3") # SAIDA 1
+G.add_edge("V-18", "MLP-1") # SAIDA 2
+# V-19 
+G.add_edge("V-19", "MLP-1") # SAIDA 1
+G.add_edge("V-19", "V-20") # SAIDA 2
+# V-20
+G.add_edge("V-20", "CT-9") # SAIDA 1
+G.add_edge("V-20", "V-21") # SAIDA 2
+# V-21
+G.add_edge("V-21", "MLP-2") # SAIDA 1
+G.add_edge("V-21", "MLP-3") # SAIDA 2
+# V-22
+G.add_edge("V-22", "MLP-2") # SAIDA 1
+G.add_edge("V-22", "V-23") # SAIDA 2
+# V-23
+G.add_edge("V-23", "MLP-3") # SAIDA 1
+G.add_edge("V-23", "CT-10") # SAIDA 2
+
+# V-24
+# V-25
+# V-26
+# V-27
+
+# V-28
+G.add_edge("V-28", "E-7") # SAIDA 1
+G.add_edge("V-28", "E-6") # SAIDA 2
+# V-29
+G.add_edge("V-29", "E-8") # SAIDA 1
+G.add_edge("V-29", "E-9") # SAIDA 2
+# V-30
+# V-31
+G.add_edge("V-31", "") # SAIDA 1
+G.add_edge("V-31", "TC-1") # SAIDA 2 - E-5
+# V-32
+G.add_edge("V-32", "") # SAIDA 1
+G.add_edge("V-32", "TC-1") # SAIDA 2 - E-6
+# V-33
+G.add_edge("V-33", "CT-20") # SAIDA 1
+G.add_edge("V-33", "V-34") # SAIDA 2
+# V-34
+G.add_edge("V-34", "CT-14") # SAIDA 1 - CT-14 É CAMINHO PARA SILOS SA 1-4
+G.add_edge("V-34", "V-48") # SAIDA 2
+# V-35
+# V-36
+# V-37
+# V-38
+# V-39
+# V-40
+# V-41
+# V-42
+# V-43
+G.add_edge("V-43", "E-9") # SAIDA 1
+G.add_edge("V-43", "E-7") # SAIDA 2
+
+# V-48
+G.add_edge("V-48", "TC-2") # SAIDA 1 - E7
+G.add_edge("V-48", "TC-1") # SAIDA 2 - E7
+
+# V-50
+G.add_edge("V-50", "TC-2") # SAIDA 1 - E8
+G.add_edge("V-50", "TC-1") # SAIDA 2 - E8
+# V-51
+G.add_edge("V-51", "TC-2") # SAIDA 1 - E9
+G.add_edge("V-51", "TC-1") # SAIDA 2 - E9
+
+# V-53
+G.add_edge("V-53", "CT-7") # SAIDA 1
+G.add_edge("V-53", "CT-23") # SAIDA 2
+
+# V-54
+G.add_edge("V-54", "CT-7") # SAIDA 1
+G.add_edge("V-54", "CT-23") # SAIDA 2
+
+# V-201
+G.add_edge("V-201", "CT-201") # SAIDA 1
+G.add_edge("V-201", "V-18") # SAIDA 2
+# V-202
+G.add_edge("V-202", "V-7") # SAIDA 1
+G.add_edge("V-202", "V-8") # SAIDA 2
+
+
 
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
