@@ -17,7 +17,7 @@ G = nx.DiGraph()
 # Definindo os nós (origens, intermediários, destinos)
 vb = [f"V-{i}" for i in range(1, 81)]  # declarado 80 valvulas
 el = [f"E-{i}" for i in range(1, 21)]  # declarado 20 elevadores
-ct = [f"CT-{i}" for i in range(1, 51)]  # declarado 50 cts
+ct = [f"CT-{i}" for i in range(1, 61)]  # declarado 60 cts
 rt = [f"RT-{i}" for i in range(1, 10)]  # declarado 10 rts
 tc = [f"TC-{i}" for i in range(1, 10)]  # declarado 10 tcs
 vr = [f"VR-{i}" for i in range(1, 10)]  # declarado 10 vrs
@@ -81,6 +81,11 @@ G.add_edge("CT-16", "SA-08")
 # CT-20
 G.add_edge("CT-20", "V-201") # SAIDA 1
 G.add_edge("CT-20", "V-43") # SAIDA 2
+
+# CT-23
+G.add_edge("CT-23", "V-55") # SAIDA 1
+# CT-59
+G.add_edge("CT-59", "E-6") # SAIDA 1
 # CT-201
 G.add_edge("CT-201", "V-202") # SAIDA 1
 
@@ -108,6 +113,15 @@ G.add_edge("E-7", "V-35") # SAIDA UNICA
 G.add_edge("MOEGA 1", "V-1")
 G.add_edge("MOEGA 2", "V-4")
 
+# --------------------------------------------------- MLP - MAQUINAS DE LIMPEZA ---------------------------------------------------
+#MLP-1
+G.add_edge("MLP-1", "V-24")
+#MLP-2
+G.add_edge("MLP-2", "V-25")
+#MLP-3
+G.add_edge("MLP-3", "V-26")
+#MLP-4
+G.add_edge("MLP-4", "V-58")
 
 # ---------------------------------------------------TC---------------------------------------------------
 # TC-1 MANDA PARA SECADOR 1
@@ -201,10 +215,10 @@ G.add_edge("V-29", "E-9") # SAIDA 2
 G.add_edge("V-30", "V-31") # SAIDA 1
 G.add_edge("V-30", "CT-22") # SAIDA 2
 # V-31
-G.add_edge("V-31", "") # SAIDA 1
+G.add_edge("V-31", "V-56") # SAIDA 1
 G.add_edge("V-31", "TC-1") # SAIDA 2 - E-5
 # V-32
-G.add_edge("V-32", "") # SAIDA 1
+G.add_edge("V-32", "V-57") # SAIDA 1
 G.add_edge("V-32", "TC-1") # SAIDA 2 - E-6
 # V-33
 G.add_edge("V-33", "CT-20") # SAIDA 1
@@ -240,27 +254,59 @@ G.add_edge("V-42", "E-9") # SAIDA 2
 G.add_edge("V-43", "E-9") # SAIDA 1
 G.add_edge("V-43", "E-7") # SAIDA 2
 # V-44
+G.add_edge("V-44", "V-45") # SAIDA 1
+G.add_edge("V-44", "CT-16") # SAIDA 2
 # V-45
+G.add_edge("V-45", "V-46") # SAIDA 1
+G.add_edge("V-45", "CT-20") # SAIDA 2
 # V-46
+G.add_edge("V-46", "CT-21") # SAIDA 1
+G.add_edge("V-46", "CT-15") # SAIDA 2
 # V-47
+G.add_edge("V-47", "V-52") # SAIDA 1
+G.add_edge("V-47", "CT-17") # SAIDA 2
 # V-48
 G.add_edge("V-48", "TC-2") # SAIDA 1 - E7
 G.add_edge("V-48", "TC-1") # SAIDA 2 - E7
-
+# V-49
+G.add_edge("V-49", "V-50") # SAIDA 1 - E7
+G.add_edge("V-49", "CT-14") # SAIDA 2 - E7
 # V-50
 G.add_edge("V-50", "TC-2") # SAIDA 1 - E8
 G.add_edge("V-50", "TC-1") # SAIDA 2 - E8
 # V-51
 G.add_edge("V-51", "TC-2") # SAIDA 1 - E9
 G.add_edge("V-51", "TC-1") # SAIDA 2 - E9
-
+# V-52
+G.add_edge("V-52", "CT-21") # SAIDA 1 - E9
+G.add_edge("V-52", "CT-20") # SAIDA 2 - E9
 # V-53
 G.add_edge("V-53", "CT-7") # SAIDA 1
 G.add_edge("V-53", "CT-23") # SAIDA 2
-
 # V-54
 G.add_edge("V-54", "CT-7") # SAIDA 1
 G.add_edge("V-54", "CT-23") # SAIDA 2
+# V-55
+G.add_edge("V-55", "MLP-3") # SAIDA 1
+G.add_edge("V-55", "MLP-4") # SAIDA 2
+# V-56
+G.add_edge("V-56", "MLP-3") # SAIDA 1
+G.add_edge("V-56", "MLP-4") # SAIDA 2
+# V-57
+G.add_edge("V-57", "MLP-3") # SAIDA 1
+G.add_edge("V-57", "MLP-4") # SAIDA 2
+# V-58
+G.add_edge("V-58", "V-59") # SAIDA 1 ---------- TA ESTRANHO NO DESENHO
+G.add_edge("V-58", "CT-10") # SAIDA 2---------- TA ESTRANHO N DESENHO
+# V-59
+G.add_edge("V-59", "V-59") # SAIDA 1 ---------- TA ESTRANHO NO DESENHO
+G.add_edge("V-59", "CT-10") # SAIDA 2---------- TA ESTRANHO N DESENHO
+# V-60
+G.add_edge("V-60", "CT-17") # SAIDA 1
+G.add_edge("V-60", "CT-60") # SAIDA 2
+# V-61
+G.add_edge("V-61", "E-10") # SAIDA 1
+G.add_edge("V-61", "E-11") # SAIDA 2
 
 # V-201
 G.add_edge("V-201", "CT-201") # SAIDA 1
