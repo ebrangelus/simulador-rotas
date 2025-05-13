@@ -159,6 +159,19 @@ G.add_edge("SA-6", "CT-19") # SA 6
 G.add_edge("SA-7", "CT-19") # SA 7
 G.add_edge("SA-8", "CT-19") # SA 8
 
+# ---------------------------------------------------SP - SILOS ARMAZENADORES---------------------------------------------------
+G.add_edge("SP-01", "CT-5") # SP 1
+G.add_edge("SP-02", "CT-5") # SP 2
+G.add_edge("SP-03", "CT-5") # SP 3
+G.add_edge("SP-04", "CT-5") # SP 4
+G.add_edge("SP-05", "CT-5") # SP 5
+
+G.add_edge("SP-06", "CT-6") # SP 6
+G.add_edge("SP-07", "CT-6") # SP 7
+G.add_edge("SP-08", "CT-6") # SP 8
+G.add_edge("SP-09", "CT-6") # SP 9
+G.add_edge("SP-10", "CT-6") # SP 10
+
 # ---------------------------------------------------SC - SECADORES---------------------------------------------------
 G.add_edge("SEC-1", "CT-12") # SECADOR 1
 G.add_edge("SEC-2", "CT-13") # SECADOR 2
