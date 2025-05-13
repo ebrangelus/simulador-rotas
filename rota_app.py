@@ -52,8 +52,10 @@ G.add_edge("CT-4", "SP-07")
 G.add_edge("CT-4", "SP-08")
 G.add_edge("CT-4", "SP-09")
 G.add_edge("CT-4", "SP-10")
-
-
+# CT-5 - SAIDA UNICA
+G.add_edge("CT-5", "V-9")
+# CT-6 - SAIDA UNICA
+G.add_edge("CT-6", "V-10")
 # CT-7 - SAIDA UNICA
 G.add_edge("CT-7", "V-19")
 # CT-8 - SAIDA UNICA
@@ -62,11 +64,18 @@ G.add_edge("CT-8", "V-19")
 G.add_edge("CT-9", "V-28")
 # CT-10 - SAIDA UNICA
 G.add_edge("CT-10", "V-29")
-
+# CT-11 - SAIDA UNICA
+G.add_edge("CT-11", "E-5")
+# CT-12 - SAIDA UNICA
+G.add_edge("CT-12", "V-37")
+# CT-13 - SAIDA UNICA
+G.add_edge("CT-13", "V-39")
 # CT-14
 G.add_edge("CT-14", "CT-16") # SAIDA 1 - MANDA PARA SA1-4
 G.add_edge("CT-14", "CT-17") # SAIDA 2 - MANDA PARA SA4-8
-
+# CT-15 - SAIDA UNICA
+G.add_edge("CT-15", "CT-16")
+G.add_edge("CT-15", "CT-17")
 # CT-16 - SA1 AO 4
 G.add_edge("CT-16", "SA-01")
 G.add_edge("CT-16", "SA-02")
@@ -77,15 +86,26 @@ G.add_edge("CT-16", "SA-05")
 G.add_edge("CT-16", "SA-06")
 G.add_edge("CT-16", "SA-07")
 G.add_edge("CT-16", "SA-08")
-
+# CT-18 - SAIDA UNICA
+G.add_edge("CT-18", "E-10") # CAMINHO PARA EXPEDIÇÃO
+# CT-19 - SAIDA UNICA
+G.add_edge("CT-19", "E-11") # CAMINHO PARA EXPEDIÇÃO
 # CT-20
 G.add_edge("CT-20", "V-201") # SAIDA 1
 G.add_edge("CT-20", "V-43") # SAIDA 2
-
+# CT-21
+G.add_edge("CT-21", "TC-3") # CAMINHO SILOS DE EXPEDIÇÃO
+# CT-22
+G.add_edge("CT-22", "TC-3") # CAMINHO SILOS DE EXPEDIÇÃO
+G.add_edge("CT-23", "CT-16") # CAMINHO PARA SILOS ARMAZENAMENTO 1-4
+G.add_edge("CT-23", "V-60") # CAMINHO PARA SILOS ARMAZENAMENTO 5-8 OU EXPEDIÇÃO
 # CT-23
 G.add_edge("CT-23", "V-55") # SAIDA 1
+
 # CT-59
 G.add_edge("CT-59", "E-6") # SAIDA 1
+# CT-60
+G.add_edge("CT-60", "V-61") # SAIDA 1
 # CT-201
 G.add_edge("CT-201", "V-202") # SAIDA 1
 
@@ -123,11 +143,21 @@ G.add_edge("MLP-3", "V-26")
 #MLP-4
 G.add_edge("MLP-4", "V-58")
 
+# ---------------------------------------------------SC - SECADORES---------------------------------------------------
+G.add_edge("SEC-1", "CT-12") # SECADOR 1
+G.add_edge("SEC-2", "CT-13") # SECADOR 2
+
 # ---------------------------------------------------TC---------------------------------------------------
 # TC-1 MANDA PARA SECADOR 1
 G.add_edge("TC-1", "SEC-1") # SAIDA 1 - VEM E-5, 6, 7, 8, 9
 # TC-2 MANDA PARA SECADOR 2
 G.add_edge("TC-2", "SEC-2") # SAIDA 1
+# TC-3 MANDA PARA EXPEDIÇÃO
+G.add_edge("TC-3", "SIL-01") # EXPEDIÇÃO
+G.add_edge("TC-3", "SIL-02") # EXPEDIÇÃO
+G.add_edge("TC-3", "SIL-03") # EXPEDIÇÃO
+G.add_edge("TC-3", "SIL-04") # EXPEDIÇÃO
+G.add_edge("TC-3", "SIL-05") # EXPEDIÇÃO
 
 # ---------------------------------------------------VALVULAS---------------------------------------------------
 # V-1
