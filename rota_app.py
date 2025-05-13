@@ -78,14 +78,14 @@ G.add_edge("CT-15", "CT-16")
 G.add_edge("CT-15", "CT-17")
 # CT-16 - SA1 AO 4
 G.add_edge("CT-16", "SA-01")
-G.add_edge("CT-16", "SA-02")
-G.add_edge("CT-16", "SA-03")
-G.add_edge("CT-16", "SA-04")
+# G.add_edge("CT-16", "SA-02")
+# G.add_edge("CT-16", "SA-03")
+# G.add_edge("CT-16", "SA-04")
 # CT-17 - SA5 AO 8
 G.add_edge("CT-16", "SA-05")
-G.add_edge("CT-16", "SA-06")
-G.add_edge("CT-16", "SA-07")
-G.add_edge("CT-16", "SA-08")
+# G.add_edge("CT-16", "SA-06")
+# G.add_edge("CT-16", "SA-07")
+# G.add_edge("CT-16", "SA-08")
 # CT-18 - SAIDA UNICA
 G.add_edge("CT-18", "E-10") # CAMINHO PARA EXPEDIÇÃO
 # CT-19 - SAIDA UNICA
@@ -150,27 +150,27 @@ G.add_edge("MLP-4", "V-58")
 
 # ---------------------------------------------------SA - SILOS ARMAZENADORES---------------------------------------------------
 G.add_edge("SA-1", "CT-18") # SA 1
-G.add_edge("SA-2", "CT-18") # SA 2
-G.add_edge("SA-3", "CT-18") # SA 3
-G.add_edge("SA-4", "CT-18") # SA 4
+# G.add_edge("SA-2", "CT-18") # SA 2
+# G.add_edge("SA-3", "CT-18") # SA 3
+# G.add_edge("SA-4", "CT-18") # SA 4
 
 G.add_edge("SA-5", "CT-19") # SA 5
-G.add_edge("SA-6", "CT-19") # SA 6
-G.add_edge("SA-7", "CT-19") # SA 7
-G.add_edge("SA-8", "CT-19") # SA 8
+# G.add_edge("SA-6", "CT-19") # SA 6
+# G.add_edge("SA-7", "CT-19") # SA 7
+# G.add_edge("SA-8", "CT-19") # SA 8
 
 # ---------------------------------------------------SP - SILOS ARMAZENADORES---------------------------------------------------
 G.add_edge("SP-01", "CT-5") # SP 1
-G.add_edge("SP-02", "CT-5") # SP 2
-G.add_edge("SP-03", "CT-5") # SP 3
-G.add_edge("SP-04", "CT-5") # SP 4
-G.add_edge("SP-05", "CT-5") # SP 5
+# G.add_edge("SP-02", "CT-5") # SP 2
+# G.add_edge("SP-03", "CT-5") # SP 3
+# G.add_edge("SP-04", "CT-5") # SP 4
+# G.add_edge("SP-05", "CT-5") # SP 5
 
 G.add_edge("SP-06", "CT-6") # SP 6
-G.add_edge("SP-07", "CT-6") # SP 7
-G.add_edge("SP-08", "CT-6") # SP 8
-G.add_edge("SP-09", "CT-6") # SP 9
-G.add_edge("SP-10", "CT-6") # SP 10
+# G.add_edge("SP-07", "CT-6") # SP 7
+# G.add_edge("SP-08", "CT-6") # SP 8
+# G.add_edge("SP-09", "CT-6") # SP 9
+# G.add_edge("SP-10", "CT-6") # SP 10
 
 # ---------------------------------------------------SC - SECADORES---------------------------------------------------
 G.add_edge("SEC-1", "CT-12") # SECADOR 1
@@ -183,10 +183,10 @@ G.add_edge("TC-1", "SEC-1") # SAIDA 1 - VEM E-5, 6, 7, 8, 9
 G.add_edge("TC-2", "SEC-2") # SAIDA 1
 # TC-3 MANDA PARA EXPEDIÇÃO
 G.add_edge("TC-3", "SIL-01") # EXPEDIÇÃO
-G.add_edge("TC-3", "SIL-02") # EXPEDIÇÃO
-G.add_edge("TC-3", "SIL-03") # EXPEDIÇÃO
-G.add_edge("TC-3", "SIL-04") # EXPEDIÇÃO
-G.add_edge("TC-3", "SIL-05") # EXPEDIÇÃO
+# G.add_edge("TC-3", "SIL-02") # EXPEDIÇÃO
+# G.add_edge("TC-3", "SIL-03") # EXPEDIÇÃO
+# G.add_edge("TC-3", "SIL-04") # EXPEDIÇÃO
+# G.add_edge("TC-3", "SIL-05") # EXPEDIÇÃO
 
 # ---------------------------------------------------VALVULAS---------------------------------------------------
 # V-1
