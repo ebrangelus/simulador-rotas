@@ -17,7 +17,7 @@ G = nx.DiGraph()
 # Definindo os nós (origens, intermediários, destinos)
 vb = [f"V-{i}" for i in range(1, 81)]  # declarado 80 valvulas
 el = [f"E-{i}" for i in range(1, 21)]  # declarado 20 elevadores
-ct = [f"CT-{i}" for i in range(1, 61)]  # declarado 60 cts
+ct = [f"CT-{i}" for i in range(1, 71)]  # declarado 70 cts
 rt = [f"RT-{i}" for i in range(1, 10)]  # declarado 10 rts
 tc = [f"TC-{i}" for i in range(1, 10)]  # declarado 10 tcs
 vr = [f"VR-{i}" for i in range(1, 10)]  # declarado 10 vrs
