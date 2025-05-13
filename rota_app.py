@@ -147,6 +147,18 @@ G.add_edge("MLP-3", "V-26")
 #MLP-4
 G.add_edge("MLP-4", "V-58")
 
+
+# ---------------------------------------------------SA - SILOS ARMAZENADORES---------------------------------------------------
+G.add_edge("SA-1", "CT-18") # SA 1
+G.add_edge("SA-2", "CT-18") # SA 2
+G.add_edge("SA-3", "CT-18") # SA 3
+G.add_edge("SA-4", "CT-18") # SA 4
+
+G.add_edge("SA-5", "CT-19") # SA 5
+G.add_edge("SA-6", "CT-19") # SA 6
+G.add_edge("SA-7", "CT-19") # SA 7
+G.add_edge("SA-8", "CT-19") # SA 8
+
 # ---------------------------------------------------SC - SECADORES---------------------------------------------------
 G.add_edge("SEC-1", "CT-12") # SECADOR 1
 G.add_edge("SEC-2", "CT-13") # SECADOR 2
