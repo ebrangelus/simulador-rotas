@@ -127,7 +127,11 @@ G.add_edge("E-7", "V-33") # SAIDA UNICA
 # E-8
 G.add_edge("E-8", "V-49") # SAIDA UNICA
 # E-9
-G.add_edge("E-7", "V-35") # SAIDA UNICA
+G.add_edge("E-9", "V-35") # SAIDA UNICA
+# E-10
+G.add_edge("E-10", "V-44") # SAIDA UNICA
+# E-11
+G.add_edge("E-11", "V-47") # SAIDA UNICA
 
 # --------------------------------------------------- MOEGAS ---------------------------------------------------
 G.add_edge("MOEGA 1", "V-1")
