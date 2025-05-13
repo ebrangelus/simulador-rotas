@@ -374,12 +374,8 @@ G.add_edge("V-201", "V-18") # SAIDA 2
 G.add_edge("V-202", "V-7") # SAIDA 1
 G.add_edge("V-202", "V-8") # SAIDA 2
 
-
-
 # Rotas
 rotas = [f"Rota {i+1}" for i in range(10)]
-
-
 if "rotas_ativas" not in st.session_state:
     st.session_state["rotas_ativas"] = {}
 
