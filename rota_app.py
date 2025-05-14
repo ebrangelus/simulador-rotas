@@ -55,7 +55,7 @@ arestas_ct = [
     ("CT-10", "V-29"),
     ("CT-11", "E-5"),
     ("CT-12", "V-37"),
-    ("CT-13", "V-39")
+    ("CT-13", "V-39"),
     ("CT-14", "CT-16"), # SAIDA 1 - MANDA PARA SA1-4
     ("CT-14", "CT-17"), # SAIDA 2 - MANDA PARA SA4-8
     ("CT-15", "CT-16"),
