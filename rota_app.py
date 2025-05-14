@@ -116,7 +116,7 @@ arestas_mlp = [
     ("MLP-3", "V-26"),
     ("MLP-4", "V-58"),
 ]
-G.add.edges.from(arestas_mlp)
+G.add_edges_from(arestas_mlp)
 
 
 # ---------------------------------------------------SA - SILOS ARMAZENADORES---------------------------------------------------
@@ -131,7 +131,7 @@ arestas_sa = [
     ("SA-7", "CT-19"), # SA 7
     ("SA-8", "CT-19"), # SA 8
 ]
-G.add.edges.from(arestas_sa)
+G.add_edges_from(arestas_sa)
 
 # ---------------------------------------------------SP - SILOS ARMAZENADORES---------------------------------------------------
 arestas_sp = [
@@ -147,14 +147,14 @@ arestas_sp = [
     ("SP-09", "CT-6"), # SP 9
     ("SP-10", "CT-6"), # SP 10
 ]
-G.add.edges.from(arestas_sa)
+G.add_edges_from(arestas_sa)
 
 # ---------------------------------------------------SC - SECADORES---------------------------------------------------
 arestas_sec = [
     ("SEC-1", "CT-12"), # SECADOR 1
     ("SEC-2", "CT-13"), # SECADOR 2
 ]
-G.add.edges.from(arestas_sec)
+G.add_edges_from(arestas_sec)
 
 # ---------------------------------------------------TC---------------------------------------------------
 arestas_tc = [
@@ -166,7 +166,7 @@ arestas_tc = [
     ("TC-3", "SIL-04"), # EXPEDIÇÃO
     ("TC-3", "SIL-05"), # EXPEDIÇÃO
 ]
-G.add.edges.from(arestas_tc)
+G.add_edges_from(arestas_tc)
 # ---------------------------------------------------VALVULAS---------------------------------------------------
 arestas_val = [
 ("V-1", "CT-1"), # SAIDA 1
@@ -288,7 +288,7 @@ arestas_val = [
 ("V-202", "V-7"), # SAIDA 1
 ("V-202", "V-8"), # SAIDA 2
 ]
-G.add.edges.from(arestas_val)
+G.add_edges_from(arestas_val)
 
 
 # Rotas
