@@ -107,7 +107,7 @@ arestas_moegas = [
     ("MOEGA 1", "V-1"),
     ("MOEGA 2", "V-4"),
 ]
-G.add.edges.from(arestas_moegas)
+G.add_edges_from(arestas_moegas)
 
 # --------------------------------------------------- MLP - MAQUINAS DE LIMPEZA ---------------------------------------------------
 arestas_mlp = [
