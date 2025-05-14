@@ -332,56 +332,50 @@ for i, rota in enumerate(rotas):
 
     with col7:
         conflitos_detectados = []
+       # Substitua TODO o bloco dentro do if st.button("▶️ Executar", key=f"executar_{i}"): 
+# pelo seguinte código:
+
         if st.button("▶️ Executar", key=f"executar_{i}"):
             if nx.has_path(G, origem, destino):
-                caminhos_possiveis = list(nx.shortest_simple_paths(G, origem, destino))
-                caminho_final = None
-
-                for caminho in caminhos_possiveis:
-                    arestas_caminho = set(zip(caminho, caminho[1:]))
-                    nos_caminho = set(caminho)
-
+                try:
+            # 1. Primeiro tenta encontrar UM caminho com A* (mais rápido)
+                    caminho_final = nx.astar_path(G, origem, destino, heuristic=heuristica_no_simples)
+            
+            # 2. Verificação simplificada de conflitos (apenas nós críticos)
+                    nos_criticos = {"CT-14", "CT-15", "CT-16", "CT-17", "CT-20", "CT-21", "CT-22", "CT-23",
+                                   "V-201", "V-202", "E-10", "E-11"}  # Adicione outros nós estratégicos
+            
                     conflito = False
-
-                    for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    rotas_ativas = st.session_state["rotas_ativas"]
+            
+                    for j, outro_caminho in rotas_ativas.items():
                         if i == j:
                             continue
-
-                        arestas_outro_caminho = set(zip(outro_caminho, outro_caminho[1:]))
-                        conflito_arestas = arestas_caminho & arestas_outro_caminho
-                        conflito_nos = nos_caminho & set(outro_caminho)
-
-                        if conflito_arestas or conflito_nos:
+                
+                # Verifica se compartilham nós críticos
+                        if any(no in nos_criticos and no in outro_caminho for no in caminho_final):
                             conflito = True
-                            conflitos_detectados.append((caminho, outro_caminho, conflito_arestas | conflito_nos))
-                            break  # já encontrou um conflito, passa pro próximo caminho possível
-
-                        if not conflito:
-                            arestas_caminho = set(zip(caminho_final, caminho_final[1:]))
-                            for j, outro_caminho in rotas_ativas.items():
-                                if i == j:
-                                    continue
-                                arestas_outro = set(zip(outro_caminho, outro_caminho[1:]))
-                                if arestas_caminho & arestas_outro:
-                                    conflito = True
-                                    break
-
-                if caminho_final:
-                    st.session_state[f"origem_{i}"] = origem
-                    st.session_state[f"destino_{i}"] = destino
-                    st.session_state[f"prelimpeza_{i}"] = prelimpeza
-                    st.session_state[f"origemsecador_{i}"] = origemsecador
-                    st.session_state["status_rotas"][i] = "executando"
-                    st.session_state["rotas_ativas"][i] = caminho_final
-                    st.session_state["mensagens_rotas"][i]["erro"] = None
-                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_final)}"
-                else:
-                    st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Conflito em todos os caminhos possíveis"
+                            break
+            
+                    if not conflito:
+                        st.session_state[f"origem_{i}"] = origem
+                        st.session_state[f"destino_{i}"] = destino
+                        st.session_state[f"prelimpeza_{i}"] = prelimpeza
+                        st.session_state[f"origemsecador_{i}"] = origemsecador
+                        st.session_state["status_rotas"][i] = "executando"
+                        st.session_state["rotas_ativas"][i] = caminho_final
+                        st.session_state["mensagens_rotas"][i]["erro"] = None
+                        st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_final)}"
+                    else:
+                        st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Conflito em nós críticos com outra rota ativa"
+                        st.session_state["status_rotas"][i] = "parado"
+                
+                except nx.NetworkXNoPath:
+                    st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho não encontrado"
                     st.session_state["status_rotas"][i] = "parado"
             else:
-                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido"
+                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Origem e destino não conectados"
                 st.session_state["status_rotas"][i] = "parado"
-
 
     with col8:
         if st.button("⏸️ Pausar", key=f"pausar_{i}"):
