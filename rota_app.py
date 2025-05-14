@@ -356,9 +356,15 @@ for i, rota in enumerate(rotas):
                             conflitos_detectados.append((caminho, outro_caminho, conflito_arestas | conflito_nos))
                             break  # já encontrou um conflito, passa pro próximo caminho possível
 
-                    if not conflito:
-                        caminho_final = caminho
-                        break  # encontrou um caminho viável, para a busca
+                        if not conflito:
+                            arestas_caminho = set(zip(caminho_final, caminho_final[1:]))
+                            for j, outro_caminho in rotas_ativas.items():
+                                if i == j:
+                                    continue
+                                arestas_outro = set(zip(outro_caminho, outro_caminho[1:]))
+                                if arestas_caminho & arestas_outro:
+                                    conflito = True
+                                    break
 
                 if caminho_final:
                     st.session_state[f"origem_{i}"] = origem
