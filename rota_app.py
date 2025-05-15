@@ -55,8 +55,8 @@ val = [f"VAL-{i}" for i in range(1, 10)]  # declarado 30 vals
 
 origens = ["MOEGA 1", "MOEGA 2", "SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08"]
 intermediarios = vb + el + ct + rt + tc + vr + val + ["CT-201", "V-201", "V-202"]
-limpeza = [" ","MLP-1", "MLP-2", "MLP-3", "MLP-4"]
-secador = [" ", "SEC-1", "SEC-2"]
+limpeza = ["MLP-1", "MLP-2", "MLP-3", "MLP-4"]
+secador = ["SEC-1", "SEC-2"]
 destinos = ["SP-01", "SP-02", "SP-03", "SP-04", "SP-05", "SP-06", "SP-07", "SP-08", "SP-09", "SP-10", "SA-01", "SA-02", "SA-03", "SA-04", "SA-05", "SA-06", "SA-07", "SA-08", "SIL-01", "SIL-02", "SIL-03", "SIL-04", "SIL-05"]
 
 # Adicionando os nós no grafo
