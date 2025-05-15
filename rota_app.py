@@ -39,6 +39,46 @@ def construir_caminho(G, origem, destino, prelimpeza=None, secador=None):
     # Concatena todos os segmentos
     return [nó for segmento in segmentos for nó in segmento]
 #---------------------------------------
+#---------------------------------------
+
+def encontrar_todas_rotas(G, origem, destino, prelimpeza=None, secador=None, limite=20):
+    from itertools import product
+    
+    # Define os segmentos obrigatórios
+    segmentos_obrigatorios = []
+    if prelimpeza and prelimpeza.strip():
+        if not nx.has_path(G, origem, prelimpeza):
+            return []
+        segmentos_obrigatorios.append([prelimpeza])
+        ponto_partida = prelimpeza
+    else:
+        ponto_partida = origem
+    
+    if secador and secador.strip():
+        if not nx.has_path(G, ponto_partida, secador):
+            return []
+        segmentos_obrigatorios.append([secador])
+        ponto_partida = secador
+    
+    # Encontra TODOS os caminhos entre os segmentos
+    try:
+        caminhos = list(nx.all_simple_paths(G, ponto_partida, destino, cutoff=10))[:limite]
+    except nx.NetworkXNoPath:
+        return []
+    
+    # Combina os segmentos
+    rotas_completas = []
+    for caminho in caminhos:
+        rota = []
+        if prelimpeza and prelimpeza.strip():
+            rota.extend(nx.shortest_path(G, origem, prelimpeza))
+        rota.extend(caminho)
+        rotas_completas.append(rota)
+    
+    return rotas_completas
+
+
+#---------------------------------------
 st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 
 # Criação do grafo direcionado
@@ -337,6 +377,39 @@ st.title("Simulador de Rotas Industriais")
 for i, rota in enumerate(rotas):
     col1, col2, col3, col4, col5, col6, col7, col8 , col9, col10, col11 = st.columns([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2])
 
+# ------ ROTA 11 - TODAS AS POSSIBILIDADES (NOVO BOTÃO) ------
+st.markdown("---")  # Linha divisória
+st.subheader("🔍 Rota 11 - Todas as Possibilidades")
+
+# Seletores ESPECÍFICOS para a Rota 11 (opcional, ou reutiliza os existentes)
+origem_11 = st.selectbox("Origem (Rota 11)", origens, key="origem_11")
+destino_11 = st.selectbox("Destino (Rota 11)", destinos, key="destino_11")
+prelimpeza_11 = st.selectbox("Pré-Limpeza (Rota 11)", [" "] + limpeza, key="prelimpeza_11")
+secador_11 = st.selectbox("Secador (Rota 11)", [" "] + secador, key="secador_11")
+
+# Botão para calcular
+if st.button("🔄 Calcular Todas as Rotas Possíveis", key="botao_todas_rotas"):
+    prelimpeza_sel = prelimpeza_11.strip() if prelimpeza_11.strip() else None
+    secador_sel = secador_11.strip() if secador_11.strip() else None
+    
+    todas_rotas = encontrar_todas_rotas(G, origem_11, destino_11, prelimpeza_sel, secador_sel)
+    
+    if todas_rotas:
+        st.session_state["todas_rotas_resultado"] = todas_rotas
+    else:
+        st.session_state["todas_rotas_resultado"] = None
+
+# Mostra resultados
+if "todas_rotas_resultado" in st.session_state:
+    if st.session_state["todas_rotas_resultado"]:
+        st.success(f"✅ {len(st.session_state['todas_rotas_resultado']} rotas encontradas!")
+        with st.expander("📜 Lista Completa"):
+            for idx, rota in enumerate(st.session_state["todas_rotas_resultado"], 1):
+                st.code(f"{idx}. {' → '.join(rota)}", language="plaintext")
+    else:
+        st.error("⚠️ Nenhuma rota válida encontrada!")
+#--------------------------------------------
+    
     with col1:
         st.write(f"**{rota}**")
 
