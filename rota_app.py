@@ -402,7 +402,7 @@ if st.button("🔄 Calcular Todas as Rotas Possíveis", key="botao_todas_rotas")
 # Mostra resultados
 if "todas_rotas_resultado" in st.session_state:
     if st.session_state["todas_rotas_resultado"]:
-        st.success(f"✅ {len(st.session_state['todas_rotas_resultado']} rotas encontradas!")
+       st.success(f"✅ {len(st.session_state['todas_rotas_resultado']} rotas encontradas!")
         with st.expander("📜 Lista Completa"):
             for idx, rota in enumerate(st.session_state["todas_rotas_resultado"], 1):
                 st.code(f"{idx}. {' → '.join(rota)}", language="plaintext")
