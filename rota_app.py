@@ -8,7 +8,37 @@ def heuristica_no_simples(u, v):
         match = re.search(r'\d+', no)
         return int(match.group()) if match else 0
     return abs(extrair_numero(u) - extrair_numero(v))
-
+#---------------------------------------
+def construir_caminho(G, origem, destino, prelimpeza=None, secador=None):
+    segmentos = []
+    
+    # 1. Origem → Pré-Limpeza (se selecionada)
+    if prelimpeza and prelimpeza.strip():
+        if nx.has_path(G, origem, prelimpeza):
+            segmentos.append(nx.shortest_path(G, origem, prelimpeza))
+        else:
+            return None
+        ponto_atual = prelimpeza
+    else:
+        ponto_atual = origem
+    
+    # 2. → Secador (se selecionado)
+    if secador and secador.strip():
+        if nx.has_path(G, ponto_atual, secador):
+            segmentos.append(nx.shortest_path(G, ponto_atual, secador)[1:])  # [1:] evita repetir o nó
+            ponto_atual = secador
+        else:
+            return None
+    
+    # 3. → Destino final
+    if nx.has_path(G, ponto_atual, destino):
+        segmentos.append(nx.shortest_path(G, ponto_atual, destino)[1:])
+    else:
+        return None
+    
+    # Concatena todos os segmentos
+    return [nó for segmento in segmentos for nó in segmento]
+#---------------------------------------
 st.set_page_config(page_title="Simulador de Rotas", layout="wide")
 
 # Criação do grafo direcionado
@@ -319,63 +349,55 @@ for i, rota in enumerate(rotas):
         origem = st.selectbox("Origem", origens, index=origens.index(valor_origem) if valor_origem in origens else 0, key=f"select_origem_{i}")
 
     with col3:
-        prelimpeza = st.selectbox("Pré Limpeza", limpeza, index=limpeza.index(valor_prelimpeza) if valor_prelimpeza in limpeza else 0, key=f"select_prelimpeza_{i}")
+        prelimpeza = st.selectbox("Pré Limpeza", [" "] + limpeza, index=limpeza.index(valor_prelimpeza) if valor_prelimpeza in limpeza else 0, key=f"select_prelimpeza_{i}")
 
     with col4:
         destino = st.selectbox("Destino", destinos, index=destinos.index(valor_destino) if valor_destino in destinos else 0, key=f"select_destino_{i}")
 
     with col5:
-        origemsecador = st.selectbox("Secador", secador, index=secador.index(valor_secador) if valor_secador in secador else 0, key=f"select_origemsecador_{i}")
+        origemsecador = st.selectbox("Secador", [" "] + secador, index=secador.index(valor_secador) if valor_secador in secador else 0, key=f"select_origemsecador_{i}")
 
     with col6:
         comentario = st.text_input("Comentário", key=f"comentario_{i}")
 
     with col7:
         conflitos_detectados = []
-       # Substitua TODO o bloco dentro do if st.button("▶️ Executar", key=f"executar_{i}"): 
-# pelo seguinte código:
+        # Substitua TODO o bloco dentro do if st.button("▶️ Executar", key=f"executar_{i}"): 
+        # pelo seguinte código:
 
         if st.button("▶️ Executar", key=f"executar_{i}"):
-            if nx.has_path(G, origem, destino):
-                try:
-            # 1. Primeiro tenta encontrar UM caminho com A* (mais rápido)
-                    caminho_final = nx.astar_path(G, origem, destino, heuristic=heuristica_no_simples)
-            
-            # 2. Verificação simplificada de conflitos (apenas nós críticos)
-                    nos_criticos = {"CT-14", "CT-15", "CT-16", "CT-17", "CT-20", "CT-21", "CT-22", "CT-23",
-                                   "V-201", "V-202", "E-10", "E-11"}  # Adicione outros nós estratégicos
-            
-                    conflito = False
-                    rotas_ativas = st.session_state["rotas_ativas"]
-            
-                    for j, outro_caminho in rotas_ativas.items():
-                        if i == j:
-                            continue
-                
-                # Verifica se compartilham nós críticos
-                        if any(no in nos_criticos and no in outro_caminho for no in caminho_final):
-                            conflito = True
-                            break
-            
-                    if not conflito:
-                        st.session_state[f"origem_{i}"] = origem
-                        st.session_state[f"destino_{i}"] = destino
-                        st.session_state[f"prelimpeza_{i}"] = prelimpeza
-                        st.session_state[f"origemsecador_{i}"] = origemsecador
-                        st.session_state["status_rotas"][i] = "executando"
-                        st.session_state["rotas_ativas"][i] = caminho_final
-                        st.session_state["mensagens_rotas"][i]["erro"] = None
-                        st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_final)}"
-                    else:
-                        st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Conflito em nós críticos com outra rota ativa"
-                        st.session_state["status_rotas"][i] = "parado"
-                
-                except nx.NetworkXNoPath:
-                    st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho não encontrado"
-                    st.session_state["status_rotas"][i] = "parado"
+            # Obtém valores (None se não selecionado)
+            prelimpeza_sel = prelimpeza if prelimpeza.strip() else None
+            secador_sel = origemsecador if origemsecador.strip() else None
+    
+            # Construção do caminho
+            caminho_final = construir_caminho(G, origem, destino, prelimpeza_sel, secador_sel)
+    
+            if caminho_final:
+                # Verificação de conflitos (mantido do seu código original)
+                nos_criticos = {"CT-14", "CT-15", ...}  # Sua lista atual
+                conflito = False
+                for j, outro_caminho in st.session_state["rotas_ativas"].items():
+                    if i == j:
+                        continue
+                    if any(no in nos_criticos and no in outro_caminho for no in caminho_final):
+                        conflito = True
+                        break
+        
+                if not conflito:
+                    st.session_state[f"origem_{i}"] = origem
+                    st.session_state[f"destino_{i}"] = destino
+                    st.session_state[f"prelimpeza_{i}"] = prelimpeza
+                    st.session_state[f"origemsecador_{i}"] = origemsecador
+                    st.session_state["status_rotas"][i] = "executando"
+                    st.session_state["rotas_ativas"][i] = caminho_final
+                    st.session_state["mensagens_rotas"][i]["erro"] = None
+                    st.session_state["mensagens_rotas"][i]["sucesso"] = f"{rota}: {' → '.join(caminho_final)}"
+                else:
+                    st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Conflito em nós críticos"
             else:
-                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Origem e destino não conectados"
-                st.session_state["status_rotas"][i] = "parado"
+                st.session_state["mensagens_rotas"][i]["erro"] = f"{rota}: Caminho inválido com as etapas selecionadas"
+            st.session_state["status_rotas"][i] = "parado" if not caminho_final else "executando"
 
     with col8:
         if st.button("⏸️ Pausar", key=f"pausar_{i}"):
