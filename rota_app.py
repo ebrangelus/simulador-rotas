@@ -64,10 +64,10 @@ arestas_ct = [
     ("CT-16", "SA-02"),
     ("CT-16", "SA-03"),
     ("CT-16", "SA-04"),
-    ("CT-16", "SA-05"),
-    ("CT-16", "SA-06"),
-    ("CT-16", "SA-07"),
-    ("CT-16", "SA-08"),
+    ("CT-17", "SA-05"),
+    ("CT-17", "SA-06"),
+    ("CT-17", "SA-07"),
+    ("CT-17", "SA-08"),
     ("CT-18", "E-10"), # CAMINHO PARA EXPEDIÇÃO
     ("CT-19", "E-11"), # CAMINHO PARA EXPEDIÇÃO
     ("CT-20", "V-201"), # SAIDA 1
@@ -147,7 +147,7 @@ arestas_sp = [
     ("SP-09", "CT-6"), # SP 9
     ("SP-10", "CT-6"), # SP 10
 ]
-G.add_edges_from(arestas_sa)
+G.add_edges_from(arestas_sp)
 
 # ---------------------------------------------------SC - SECADORES---------------------------------------------------
 arestas_sec = [
